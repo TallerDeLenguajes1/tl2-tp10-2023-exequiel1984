@@ -9,13 +9,13 @@ public class UsuarioController : Controller
 {
     private readonly ILogger<UsuarioController> _logger;
 
-    private IUsuarioRepository usuarioRepository;
+    private readonly IUsuarioRepository _usuarioRepository;
 
 
-    public UsuarioController(ILogger<UsuarioController> logger)
+    public UsuarioController(ILogger<UsuarioController> logger, IUsuarioRepository usuarioRepository)
     {
         _logger = logger;
-        usuarioRepository = new UsuarioRepository();
+        this._usuarioRepository = usuarioRepository;
 
     }
 
@@ -25,14 +25,14 @@ public class UsuarioController : Controller
         {
             if (HttpContext.Session.GetString("rol") == NivelDeAcceso.administrador.ToString())
             {
-                IndexUsuarioViewModel usuarios = new IndexUsuarioViewModel(usuarioRepository.GetAll()) ;
+                IndexUsuarioViewModel usuarios = new IndexUsuarioViewModel(_usuarioRepository.GetAll()) ;
                 return View(usuarios);
             } else
             {
                 if (HttpContext.Session.GetString("rol") == NivelDeAcceso.operador.ToString())
                 {
                     int idUsuario = Convert.ToInt32(HttpContext.Session.GetString("id"));
-                    Usuario usuario = usuarioRepository.GetById(idUsuario);
+                    Usuario usuario = _usuarioRepository.GetById(idUsuario);
                     List<Usuario> ListaUsuarios = new List<Usuario>();
                     ListaUsuarios.Add(usuario);
                     IndexUsuarioViewModel usuarios = new IndexUsuarioViewModel(ListaUsuarios) ;
@@ -55,15 +55,25 @@ public class UsuarioController : Controller
     [HttpPost]
     public IActionResult CrearUsuario(UsuarioCrearViewModel usuarioVM)
     {   
-        Usuario usuario = new Usuario (usuarioVM);
-        usuarioRepository.Create(usuario);
-        return RedirectToAction("Index");
+        if (!String.IsNullOrEmpty(HttpContext.Session.GetString("id")))
+        {
+            if (HttpContext.Session.GetString("rol") == NivelDeAcceso.administrador.ToString()) 
+            {
+                if(!ModelState.IsValid) return RedirectToRoute(new{Controller = "Login", action = "Index"});
+                Usuario usuario = new Usuario (usuarioVM);
+                _usuarioRepository.Create(usuario);
+                return RedirectToAction("Index");
+            } else
+                return RedirectToRoute(new{Controller = "Login", action = "Index"});
+
+        } else
+            return RedirectToRoute(new{Controller = "Login", action = "Index"});
     }
 
     [HttpGet]
     public IActionResult Editar(int id)
     {  
-        UsuarioEditarViewModel usuarioEditar = new UsuarioEditarViewModel(usuarioRepository.GetById(id));
+        UsuarioEditarViewModel usuarioEditar = new UsuarioEditarViewModel(_usuarioRepository.GetById(id));
         return View(usuarioEditar);
     }
 
@@ -73,7 +83,7 @@ public class UsuarioController : Controller
         if (HttpContext.Session.GetString("rol") == NivelDeAcceso.administrador.ToString()) 
         { 
             Usuario usuario = new Usuario(usuarioVM);
-            usuarioRepository.Update(usuario);
+            _usuarioRepository.Update(usuario);
             return RedirectToAction("Index");
         }
         else
@@ -85,7 +95,7 @@ public class UsuarioController : Controller
     {  
         if (HttpContext.Session.GetString("rol") == NivelDeAcceso.administrador.ToString()) 
         {
-            usuarioRepository.Remove(id);
+            _usuarioRepository.Remove(id);
             return RedirectToAction("Index");
         }
         else
