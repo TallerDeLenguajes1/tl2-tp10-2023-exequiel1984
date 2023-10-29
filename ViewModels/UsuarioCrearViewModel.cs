@@ -16,7 +16,7 @@ namespace tl2_tp10_2023_exequiel1984.ViewModels
         [Display(Name = "Nombre")] 
         public string Nombre { get => nombre; set => nombre = value; }
         [Display(Name = "Contraseña")] 
-        //[PasswordPropertyText]
+        //[PasswordPropertyText(true)]
         
         public string Contrasenia { get => contrasenia; set => contrasenia = value; }
         public NivelDeAcceso Rol { get => rol; set => rol = value; }

@@ -15,7 +15,7 @@ public class UsuarioController : Controller
     public UsuarioController(ILogger<UsuarioController> logger, IUsuarioRepository usuarioRepository)
     {
         _logger = logger;
-        this._usuarioRepository = usuarioRepository;
+        _usuarioRepository = usuarioRepository;
 
     }
 
@@ -31,7 +31,7 @@ public class UsuarioController : Controller
             {
                 if (HttpContext.Session.GetString("rol") == NivelDeAcceso.operador.ToString())
                 {
-                    int idUsuario = Convert.ToInt32(HttpContext.Session.GetString("id"));
+                    int idUsuario = HttpContext.Session.GetInt32("id").Value;
                     Usuario usuario = _usuarioRepository.GetById(idUsuario);
                     List<Usuario> ListaUsuarios = new List<Usuario>();
                     ListaUsuarios.Add(usuario);

@@ -8,13 +8,13 @@ public class TableroController : Controller
 {
     private readonly ILogger<TableroController> _logger;
 
-    private ITableroRepository tableroRepository;
+    private readonly ITableroRepository _tableroRepository;
 
 
-    public TableroController(ILogger<TableroController> logger)
+    public TableroController(ILogger<TableroController> logger, ITableroRepository tableroRepository)
     {
         _logger = logger;
-        tableroRepository = new TableroRepository();
+        _tableroRepository = tableroRepository;
 
     }
 
@@ -24,14 +24,14 @@ public class TableroController : Controller
         {
             if (HttpContext.Session.GetString("rol") == NivelDeAcceso.administrador.ToString()) 
             {
-                List<Tablero> tableros = tableroRepository.GetAll(); 
+                List<Tablero> tableros = _tableroRepository.GetAll(); 
                 return View(tableros);
             }
             else
             {
                 if (HttpContext.Session.GetString("rol") == NivelDeAcceso.operador.ToString()) 
                 {
-                    List<Tablero> tableros = tableroRepository.GetAllByIdUsuario(Convert.ToInt32(HttpContext.Session.GetString("id")));
+                    List<Tablero> tableros = _tableroRepository.GetAllByIdUsuario(HttpContext.Session.GetInt32("id").Value);
                     return View(tableros);
                 }
             }
@@ -51,7 +51,7 @@ public class TableroController : Controller
     [HttpPost]
     public IActionResult Crear(Tablero tablero)
     {   
-        tableroRepository.Create(tablero);
+        _tableroRepository.Create(tablero);
         return RedirectToAction("Index");
     }
 
@@ -60,7 +60,7 @@ public class TableroController : Controller
     {  
         if (!String.IsNullOrEmpty(HttpContext.Session.GetString("id")))
         {
-            Tablero tablero = tableroRepository.GetById(id);
+            Tablero tablero = _tableroRepository.GetById(id);
             return View(tablero);
         } else
             return RedirectToRoute(new{Controller = "Login", action = "Index"});
@@ -69,7 +69,7 @@ public class TableroController : Controller
     [HttpPost]
     public IActionResult Editar(Tablero tablero)
     {   
-        tableroRepository.UpDate(tablero);
+        _tableroRepository.UpDate(tablero);
         return RedirectToAction("Index");
     }
 
@@ -78,7 +78,7 @@ public class TableroController : Controller
     {  
         if (!String.IsNullOrEmpty(HttpContext.Session.GetString("id")))
         {
-            tableroRepository.Remove(id);
+            _tableroRepository.Remove(id);
             return RedirectToAction("Index");
         } else
             return RedirectToRoute(new{Controller = "Login", action = "Index"});

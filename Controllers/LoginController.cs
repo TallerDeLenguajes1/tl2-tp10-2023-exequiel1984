@@ -10,12 +10,12 @@ public class LoginController : Controller
 {
     private readonly ILogger<LoginController> _logger;
 
-    private IUsuarioRepository usuarioRepository;
+    private readonly IUsuarioRepository _usuarioRepository;
 
-    public LoginController(ILogger<LoginController> logger)
+    public LoginController(ILogger<LoginController> logger, IUsuarioRepository usuarioRepository)
     {
         _logger = logger;
-        usuarioRepository = new UsuarioRepository();
+        _usuarioRepository = usuarioRepository;
     }
 
     public IActionResult Index()
@@ -26,7 +26,7 @@ public class LoginController : Controller
     [HttpPost]
     public IActionResult Login(LoginViewModel loginUsuario)
     {
-        Usuario usuarioLogueado = usuarioRepository.GetUsuarioLogin(loginUsuario.Nombre, loginUsuario.Contrasenia);
+        Usuario usuarioLogueado = _usuarioRepository.GetUsuarioLogin(loginUsuario.Nombre, loginUsuario.Contrasenia);
         if (!string.IsNullOrEmpty(usuarioLogueado.NombreDeUsuario))
         {
             LoguearUsuario(usuarioLogueado);
@@ -37,7 +37,7 @@ public class LoginController : Controller
 
     private void LoguearUsuario(Usuario usuario)
     {
-        HttpContext.Session.SetString("id", usuario.Id.ToString());
+        HttpContext.Session.SetInt32("id", usuario.Id);
         HttpContext.Session.SetString("usuario", usuario.NombreDeUsuario);
         HttpContext.Session.SetString("contrasenia", usuario.Contrasenia);
         HttpContext.Session.SetString("rol", usuario.Rol.ToString());
