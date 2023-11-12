@@ -5,6 +5,7 @@
     <tr>
       <th scope="col">Id</th>
       <th scope="col">Nombre</th>
+      <th scope="col">Acciones</th>
     </tr>
   </thead>
   <tbody>
@@ -13,6 +14,10 @@
         <tr>
             <td>@usuario.Id</td>
             <td>@usuario.NombreDeUsuario</td>
+            <td>
+                    @* <a asp-controller="Usuario" asp-action="Editar" asp-route-idProducto="@usuario.Id @usuario">Editar</a> *@
+                    <a asp-controller="Usuario" asp-action="Eliminar" asp-route-id="@usuario.Id" onclick="return confirm('¿Estas seguro que quieres eliminar el elemento?')">Eliminar</a>                      
+            </td>
         </tr>
     }
   </tbody>

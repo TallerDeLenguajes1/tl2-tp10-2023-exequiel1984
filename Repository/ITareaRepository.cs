@@ -7,5 +7,9 @@ namespace tl2_tp10_2023_exequiel1984.Models
         public void UpDateEstado(int id, EstadoTarea Estado);
         public Tarea GetById(int id);
         public List<Tarea> GetAllByIdUsuario(int idUsuario);
+        public List<Tarea> GetAllByIdTablero(int idTablero);
+        public void Remove(int id);
+        public void AsignarUsuarioATarea(int idUsuario, int idTarea);
+        //public int CantidadTareasByEstado(EstadoTarea estado);
     }
 }

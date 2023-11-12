@@ -4,43 +4,44 @@ using tl2_tp10_2023_exequiel1984.Models;
 
 namespace tl2_tp10_2023_exequiel1984.Controllers;
 
-public class UsuarioController : Controller
+public class TableroController : Controller
 {
-    private readonly ILogger<UsuarioController> _logger;
+    private readonly ILogger<TableroController> _logger;
 
-    private IUsuarioRepository usuarioRepository;
+    private ITableroRepository tableroRepository;
 
 
-    public UsuarioController(ILogger<UsuarioController> logger)
+    public TableroController(ILogger<TableroController> logger)
     {
         _logger = logger;
-        usuarioRepository = new UsuarioRepository();
+        tableroRepository = new TableroRepository();
 
     }
 
     public IActionResult Index()
     {
-        List<Usuario> usuarios = usuarioRepository.GetAll();
-        return View(usuarios);
+        List<Tablero> tableros = tableroRepository.GetAll();
+        return View(tableros);
     }
 
     [HttpGet]
-    public IActionResult CrearUsuario()
+    public IActionResult Crear()
     {   
-        return View(new Usuario());
+        return View(new Tablero());
     }
 
     [HttpPost]
-    public IActionResult CrearUsuario(Usuario usuario)
+    public IActionResult Crear(Tablero tablero)
     {   
-        usuarioRepository.Create(usuario);
+        tableroRepository.Create(tablero);
         return RedirectToAction("Index");
     }
-
+/*
     [HttpGet]
-    public IActionResult Editar()
+    public IActionResult Editar(int id)
     {  
-        return View(new Usuario());
+        Usuario usuario = usuarioRepository.GetById(id);
+        return View(usuario);
     }
 
     [HttpPost]
@@ -56,7 +57,7 @@ public class UsuarioController : Controller
     {  
         usuarioRepository.Remove(id);
         return RedirectToAction("Index");
-    }
+    } */
 
     public IActionResult Privacy()
     {

@@ -1,0 +1,29 @@
+@model List<Tablero>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Id</th>
+      <th scope="col">Id Usuario Propietario</th>
+      <th scope="col">Nombre</th>
+      <th scope="col">Descripcion</th>
+      <th scope="col">Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    @foreach (var tablero in Model)
+    {
+        <tr>
+            <td>@tablero.Id</td>
+            <td>@tablero.IdUsuarioPropietario</td>
+            <td>@tablero.Nombre</td>
+            <td>@tablero.Descripcion</td>
+            <td>
+                    @* <a asp-controller="Tablero" asp-action="Editar" asp-route-id="@tablero.Id">Editar</a> *@
+                    @* <a asp-controller="Tablero" asp-action="Eliminar" asp-route-id="@tablero.Id" onclick="return confirm('¿Estas seguro que quieres eliminar el elemento?')">Eliminar</a>                       *@
+            </td>
+        </tr>
+    }
+  </tbody>
+</table>
+

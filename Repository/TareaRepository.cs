@@ -119,5 +119,88 @@ namespace tl2_tp10_2023_exequiel1984.Models
             }
             return tareas;
         }
+
+        public List<Tarea> GetAllByIdTablero(int idTablero)
+        {
+            string query = @"SELECT * FROM Tarea WHERE id_tablero = @idTablero;";
+            List<Tarea> tareas = new List<Tarea>();
+            using (SQLiteConnection connection = new SQLiteConnection(cadenaConexion))
+            {
+                SQLiteCommand command = new SQLiteCommand(query, connection);
+                command.Parameters.Add(new SQLiteParameter("@idTablero", idTablero));
+                connection.Open();
+
+                using (SQLiteDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        Tarea tarea = new Tarea();
+                        tarea.Id = Convert.ToInt32(reader["id"]);
+                        tarea.IdTablero = Convert.ToInt32(reader["id_tablero"]);
+                        tarea.Nombre = reader["nombre"].ToString();
+                        tarea.Estado = (EstadoTarea) Convert.ToInt32(reader["estado"]);
+                        tarea.Descripcion = reader["descripcion"].ToString();
+                        tarea.Color = reader["color"].ToString();
+                        tarea.IdUsuarioAsignado = Convert.ToInt32(reader["id_usuario_asignado"]);
+                        tareas.Add(tarea);
+                    }
+                }
+
+                connection.Close();
+            }
+            return tareas;
+        }
+
+        public void Remove(int id)
+        {
+            using (SQLiteConnection connection = new SQLiteConnection(cadenaConexion))
+            {
+                string query = @"DELETE FROM Tarea WHERE id = @id;";
+                connection.Open();
+                SQLiteCommand command = new SQLiteCommand(query, connection);
+                command.Parameters.Add(new SQLiteParameter("@id", id));
+                command.ExecuteNonQuery();
+                connection.Close();
+            }
+        }
+
+        public void AsignarUsuarioATarea(int idUsuario, int idTarea)
+        {
+            using (SQLiteConnection connection = new SQLiteConnection(cadenaConexion))
+            {
+                var queryString = @"
+                UPDATE Tarea SET id_usuario_asignado = @idUsuarioAsignado
+                WHERE id = @idTarea;";
+                connection.Open();
+                var command = new SQLiteCommand(queryString, connection);
+                command.Parameters.Add(new SQLiteParameter("@isUsuarioAsignado", idUsuario));
+                command.Parameters.Add(new SQLiteParameter("@idTarea", idTarea));
+                command.ExecuteNonQuery();
+                connection.Close();
+            }
+        }
+
+        /* public int CantidadTareasByEstado(EstadoTarea estado)
+        {
+            string query = @"SELECT count(*) as cantidad FROM Tarea WHERE estado = @estado;";
+            int cantidad;
+            using (SQLiteConnection connection = new SQLiteConnection(cadenaConexion))
+            {
+                SQLiteCommand command = new SQLiteCommand(query, connection);
+                command.Parameters.Add(new SQLiteParameter("@estado", estado));
+                connection.Open();
+
+                using (SQLiteDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        cantidad = Convert.ToInt32(reader["cantidad"]);
+                    }
+                }
+
+                connection.Close();
+            }
+            return cantidad;
+        } */
     }
 }
