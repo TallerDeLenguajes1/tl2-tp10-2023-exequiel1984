@@ -4,50 +4,50 @@ using tl2_tp10_2023_exequiel1984.Models;
 
 namespace tl2_tp10_2023_exequiel1984.Controllers;
 
-public class UsuarioController : Controller
+public class TareaController : Controller
 {
-    private readonly ILogger<UsuarioController> _logger;
+    private readonly ILogger<TareaController> _logger;
 
-    private IUsuarioRepository usuarioRepository;
+    private ITareaRepository tareaRepository;
 
 
-    public UsuarioController(ILogger<UsuarioController> logger)
+    public TareaController(ILogger<TareaController> logger)
     {
         _logger = logger;
-        usuarioRepository = new UsuarioRepository();
+        tareaRepository = new TareaRepository();
 
     }
 
     public IActionResult Index()
     {
-        List<Usuario> usuarios = usuarioRepository.GetAll();
-        return View(usuarios);
+        List<Tarea> tareas = tareaRepository.GetAllByIdTablero();
+        return View(tareas);
     }
 
     [HttpGet]
-    public IActionResult CrearUsuario()
+    public IActionResult Crear()
     {   
-        return View(new Usuario());
+        return View(new Tarea());
     }
 
     [HttpPost]
-    public IActionResult CrearUsuario(Usuario usuario)
+    public IActionResult Crear(Tarea tarea)
     {   
-        usuarioRepository.Create(usuario);
+        tareaRepository.Create(tarea);
         return RedirectToAction("Index");
     }
 
     [HttpGet]
     public IActionResult Editar(int id)
     {  
-        Usuario usuario = usuarioRepository.GetById(id);
-        return View(usuario);
+        Tarea tarea = tareaRepository.GetById(id);
+        return View(tarea);
     }
 
     [HttpPost]
-    public IActionResult Editar(Usuario usuario)
+    public IActionResult Editar(Tarea tarea)
     {   
-        usuarioRepository.Update(usuario);
+        tareaRepository.UpDateNombre(tarea.Id, tarea.Nombre);
 
         return RedirectToAction("Index");
     }
@@ -55,7 +55,7 @@ public class UsuarioController : Controller
     
     public IActionResult Eliminar(int id)
     {  
-        usuarioRepository.Remove(id);
+        tareaRepository.Remove(id);
         return RedirectToAction("Index");
     }
 

@@ -36,18 +36,18 @@ public class TableroController : Controller
         tableroRepository.Create(tablero);
         return RedirectToAction("Index");
     }
-/*
+
     [HttpGet]
     public IActionResult Editar(int id)
     {  
-        Usuario usuario = usuarioRepository.GetById(id);
-        return View(usuario);
+        Tablero tablero = tableroRepository.GetById(id);
+        return View(tablero);
     }
 
     [HttpPost]
-    public IActionResult Editar(int id, Usuario usuario)
+    public IActionResult Editar(Tablero tablero)
     {   
-        usuarioRepository.Update(id, usuario);
+        tableroRepository.UpDate(tablero);
 
         return RedirectToAction("Index");
     }
@@ -55,9 +55,9 @@ public class TableroController : Controller
     
     public IActionResult Eliminar(int id)
     {  
-        usuarioRepository.Remove(id);
+        tableroRepository.Remove(id);
         return RedirectToAction("Index");
-    } */
+    }
 
     public IActionResult Privacy()
     {

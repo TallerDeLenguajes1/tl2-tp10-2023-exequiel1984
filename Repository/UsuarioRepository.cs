@@ -71,14 +71,14 @@ namespace tl2_tp10_2023_exequiel1984.Models
             return usuario;
         }
 
-        public void Update(int id, Usuario usuario){
+        public void Update(Usuario usuario){
             using (SQLiteConnection connection = new SQLiteConnection(cadenaConexion))
             {
                 var queryString = @"UPDATE Usuario SET nombre_de_usuario = @nombre WHERE id = @idUsuario;";
                 connection.Open();
                 var command = new SQLiteCommand(queryString, connection);
                 command.Parameters.Add(new SQLiteParameter("@nombre", usuario.NombreDeUsuario));
-                command.Parameters.Add(new SQLiteParameter("@idUsuario", id));
+                command.Parameters.Add(new SQLiteParameter("@idUsuario", usuario.Id));
                 command.ExecuteNonQuery();
                 connection.Close();
             }

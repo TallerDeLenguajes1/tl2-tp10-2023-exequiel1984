@@ -1,0 +1,23 @@
+@model Tablero
+
+<form asp-controller="Tablero" asp-action="Editar">
+    <input hidden asp-for="@Model.Id">
+    <div class="form-group">
+        <label asp-for="@Model.Id"></label>
+        <input asp-for="@Model.Id" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="@Model.IdUsuarioPropietario">Id Usuario Propietario</label>
+        <input asp-for="@Model.IdUsuarioPropietario" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="@Model.Nombre">Nombre</label>
+        <input asp-for="@Model.Nombre" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="@Model.Descripcion">Descripcion</label>
+        <input asp-for="@Model.Descripcion" class="form-control" />
+    </div>
+    <button type="submit">Enviar</button>
+</form>

@@ -19,8 +19,8 @@
             <td>@tablero.Nombre</td>
             <td>@tablero.Descripcion</td>
             <td>
-                    @* <a asp-controller="Tablero" asp-action="Editar" asp-route-id="@tablero.Id">Editar</a> *@
-                    @* <a asp-controller="Tablero" asp-action="Eliminar" asp-route-id="@tablero.Id" onclick="return confirm('¿Estas seguro que quieres eliminar el elemento?')">Eliminar</a>                       *@
+                    <a asp-controller="Tablero" asp-action="Editar" asp-route-id="@tablero.Id">Editar</a>
+                    <a asp-controller="Tablero" asp-action="Eliminar" asp-route-id="@tablero.Id" onclick="return confirm('¿Estas seguro que quieres eliminar el elemento?')">Eliminar</a>                      
             </td>
         </tr>
     }

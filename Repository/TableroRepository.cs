@@ -24,18 +24,19 @@ namespace tl2_tp10_2023_exequiel1984.Models
             return tablero;
         }
 
-        public void UpDate(int id, Tablero tablero)
+        public void UpDate(Tablero tablero)
         {
             using (SQLiteConnection connection = new SQLiteConnection(cadenaConexion))
             {
                 var queryString = @"
                 UPDATE Tablero SET id_usuario_propietario = @idUsuarioPropietario, nombre = @nombre, descripcion = @descripcion
-                WHERE id = @id;";
+                WHERE id = @idTablero;";
                 connection.Open();
                 var command = new SQLiteCommand(queryString, connection);
                 command.Parameters.Add(new SQLiteParameter("@idUsuarioPropietario", tablero.IdUsuarioPropietario));
                 command.Parameters.Add(new SQLiteParameter("@nombre", tablero.Nombre));
                 command.Parameters.Add(new SQLiteParameter("@descripcion", tablero.Descripcion));
+                command.Parameters.Add(new SQLiteParameter("@idTablero", tablero.Id));
                 command.ExecuteNonQuery();
                 connection.Close();
             }
