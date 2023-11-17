@@ -62,6 +62,35 @@ namespace tl2_tp10_2023_exequiel1984.Models
             }
         }
 
+        public List<Tarea> GetAll()
+        {
+            string query = @"SELECT * FROM Tarea;";
+            List<Tarea> tareas = new List<Tarea>();
+            using (SQLiteConnection connection = new SQLiteConnection(cadenaConexion))
+            {
+                SQLiteCommand command = new SQLiteCommand(query, connection);
+                connection.Open();
+
+                using (SQLiteDataReader Reader = command.ExecuteReader())
+                {
+                    while (Reader.Read())
+                    {
+                        Tarea tarea = new Tarea();
+                        tarea.Id = Convert.ToInt32(Reader["id"]);
+                        tarea.IdTablero = Convert.ToInt32(Reader["id_tablero"]);
+                        tarea.Nombre = Reader["nombre"].ToString();
+                        tarea.Descripcion = Reader["descripcion"].ToString();
+                        tarea.Color = Reader["color"].ToString();
+                        tarea.IdUsuarioAsignado = Convert.ToInt32(Reader["id_usuario_asignado"]);
+                        tareas.Add(tarea);
+                    }
+                }
+
+                connection.Close();
+            }
+            return tareas;
+        }
+
         public Tarea GetById(int id)
         {
             Tarea tarea = new Tarea();

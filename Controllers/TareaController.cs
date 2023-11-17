@@ -20,7 +20,22 @@ public class TareaController : Controller
 
     public IActionResult Index()
     {
-        List<Tarea> tareas = tareaRepository.GetAllByIdTablero();
+        int idTablero = 1;
+        List<Tarea> tareas = tareaRepository.GetAllByIdTablero(idTablero);
+        return View(tareas);
+    }
+
+    [HttpGet]
+    public IActionResult ListarTareasPorIdTablero(int idTablero)
+    {
+        List<Tarea> tareas = tareaRepository.GetAllByIdTablero(idTablero);
+        return View(tareas);
+    }
+
+    [HttpGet]
+    public IActionResult ListarTareasPorIdUsuario(int idUsuario)
+    {
+        List<Tarea> tareas = tareaRepository.GetAllByIdUsuario(idUsuario);
         return View(tareas);
     }
 
