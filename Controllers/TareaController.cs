@@ -20,8 +20,10 @@ public class TareaController : Controller
 
     public IActionResult Index()
     {
-        int idTablero = 1;
-        List<Tarea> tareas = tareaRepository.GetAllByIdTablero(idTablero);
+        //int idTablero = 1;
+        //List<Tarea> tareas = tareaRepository.GetAllByIdTablero(idTablero);
+        List<Tarea> tareas = tareaRepository.GetAll();
+
         return View(tareas);
     }
 

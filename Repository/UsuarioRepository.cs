@@ -9,7 +9,7 @@ namespace tl2_tp10_2023_exequiel1984.Models
 
         public void Create(Usuario usuario)
         {
-            var query = $"INSERT INTO Usuario (nombre_de_usuario) VALUES (@nombre)";
+            var query = $"INSERT INTO Usuario (nombre_de_usuario, contrasenia, rol) VALUES (@nombre, @contrasenia, @rol)";
             using (SQLiteConnection connection = new SQLiteConnection(cadenaConexion))
             {
 
@@ -17,7 +17,8 @@ namespace tl2_tp10_2023_exequiel1984.Models
                 var command = new SQLiteCommand(query, connection);
 
                 command.Parameters.Add(new SQLiteParameter("@nombre", usuario.NombreDeUsuario));
-
+                command.Parameters.Add(new SQLiteParameter("@contrasenia", usuario.Contrasenia));
+                command.Parameters.Add(new SQLiteParameter("@rol", Convert.ToInt32(usuario.Rol)));
                 command.ExecuteNonQuery();
 
                 connection.Close();   
@@ -40,6 +41,9 @@ namespace tl2_tp10_2023_exequiel1984.Models
                         var usuario = new Usuario();
                         usuario.Id = Convert.ToInt32(reader["id"]);
                         usuario.NombreDeUsuario = reader["nombre_de_usuario"].ToString();
+                        usuario.Contrasenia = reader["contrasenia"].ToString();
+                        //usuario.Rol = reader["rol"].ToString();
+                        usuario.Rol = (NivelDeAcceso) Convert.ToInt32(reader["rol"]);
                         usuarios.Add(usuario);
                     }
                 }
@@ -64,6 +68,31 @@ namespace tl2_tp10_2023_exequiel1984.Models
                     {
                         usuario.Id = Convert.ToInt32(reader["id"]);
                         usuario.NombreDeUsuario = reader["nombre_de_usuario"].ToString();
+                    }
+                }
+                connection.Close();
+            }
+            return usuario;
+        }
+
+        public Usuario GetUsuarioLogin(string nombre, string contrasenia)
+        {
+            Usuario usuario = new Usuario();
+            using (SQLiteConnection connection = new SQLiteConnection(cadenaConexion))
+            {
+                string queryString = @"SELECT * FROM Usuario WHERE nombre_de_usuario = @nombre AND contrasenia = @contrasenia;";
+                var command = new SQLiteCommand(queryString, connection);
+                command.Parameters.Add(new SQLiteParameter("@nombre", nombre));
+                command.Parameters.Add(new SQLiteParameter("@contrasenia", contrasenia));
+                connection.Open();
+                using (SQLiteDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        usuario.Id = Convert.ToInt32(reader["id"]);
+                        usuario.NombreDeUsuario = reader["nombre_de_usuario"].ToString();
+                        usuario.Contrasenia = reader["contrasenia"].ToString();
+                        usuario.Rol = (NivelDeAcceso) Convert.ToInt32(reader["rol"]);
                     }
                 }
                 connection.Close();
