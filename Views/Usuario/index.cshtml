@@ -1,4 +1,6 @@
-@model List<Usuario>
+@using tl2_tp10_2023_exequiel1984.ViewModels;
+
+@model IndexUsuarioViewModel
 
 <table class="table">
   <thead>
@@ -6,18 +8,16 @@
       <th scope="col">Id</th>
       <th scope="col">Nombre</th>
       <th scope="col">Rol</th>
-      <th scope="col">Contraseña</th>
       <th scope="col">Acciones</th>
     </tr>
   </thead>
   <tbody>
-    @foreach (var usuario in Model)
+    @foreach (var usuario in Model.UsuariosViewModel)
     {
         <tr>
             <td>@usuario.Id</td>
             <td>@usuario.NombreDeUsuario</td>
             <td>@usuario.Rol</td>
-            <td>@usuario.Contrasenia</td>
             <td>
                     <a asp-controller="Usuario" asp-action="Editar" asp-route-id="@usuario.Id">Editar</a>
                     <a asp-controller="Usuario" asp-action="Eliminar" asp-route-id="@usuario.Id" onclick="return confirm('¿Estas seguro que quieres eliminar el elemento?')">Eliminar</a>                      

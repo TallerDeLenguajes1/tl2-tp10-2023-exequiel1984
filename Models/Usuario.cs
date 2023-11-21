@@ -17,7 +17,7 @@ namespace tl2_tp10_2023_exequiel1984.Models
         private NivelDeAcceso rol;
 
         public int Id { get => id; set => id = value; }
-        [Display(Name = "Nombre")]
+        //[Display(Name = "Nombre")]
         public string NombreDeUsuario { get => nombreDeUsuario; set => nombreDeUsuario = value; }
         //[Display(Name = "Contraseña")]
         public string Contrasenia { get => contrasenia; set => contrasenia = value; }

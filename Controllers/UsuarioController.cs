@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using tl2_tp10_2023_exequiel1984.Models;
+using tl2_tp10_2023_exequiel1984.ViewModels;
 
 namespace tl2_tp10_2023_exequiel1984.Controllers;
 
@@ -20,7 +21,7 @@ public class UsuarioController : Controller
 
     public IActionResult Index()
     {
-        List<Usuario> usuarios = usuarioRepository.GetAll();
+        IndexUsuarioViewModel usuarios = new IndexUsuarioViewModel(usuarioRepository.GetAll()) ;
         return View(usuarios);
     }
 
