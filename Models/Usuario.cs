@@ -34,5 +34,12 @@ namespace tl2_tp10_2023_exequiel1984.Models
             NombreDeUsuario = loginViewModel.Nombre;
             Contrasenia = loginViewModel.Contrasenia;
         }
+
+        public Usuario(UsuarioEditarViewModel usuario){
+            this.Id = usuario.Id;
+            this.NombreDeUsuario = usuario.Nombre;
+            this.Contrasenia = usuario.Contrasenia;
+            this.Rol = usuario.Rol;
+        }
     }
 }

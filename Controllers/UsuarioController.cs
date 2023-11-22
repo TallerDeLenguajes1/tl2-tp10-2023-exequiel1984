@@ -21,14 +21,29 @@ public class UsuarioController : Controller
 
     public IActionResult Index()
     {
-        IndexUsuarioViewModel usuarios = new IndexUsuarioViewModel(usuarioRepository.GetAll()) ;
-        return View(usuarios);
+        if (!String.IsNullOrEmpty(HttpContext.Session.GetString("usuario")))
+        {
+            if (HttpContext.Session.GetString("rol") == NivelDeAcceso.administrador.ToString())
+            {
+                IndexUsuarioViewModel usuarios = new IndexUsuarioViewModel(usuarioRepository.GetAll()) ;
+                return View(usuarios);
+            } else
+            {
+                IndexUsuarioViewModel usuarios = new IndexUsuarioViewModel(usuarioRepository.GetById(HttpContext.Session.GetInt32("id"))) ;
+                return View(usuarios);
+            }
+        }
+        return RedirectToRoute(new{Controller = "Login", action = "Index"});
     }
 
     [HttpGet]
     public IActionResult CrearUsuario()
     {   
-        return View(new Usuario());
+        if (HttpContext.Session.GetString("rol") == NivelDeAcceso.administrador.ToString()) 
+        {
+            return View(new Usuario());
+        }
+        return RedirectToRoute(new{Controller = "Login", action = "Index"});
     }
 
     [HttpPost]
@@ -41,13 +56,14 @@ public class UsuarioController : Controller
     [HttpGet]
     public IActionResult Editar(int id)
     {  
-        Usuario usuario = usuarioRepository.GetById(id);
-        return View(usuario);
+        UsuarioEditarViewModel usuarioEditar = new UsuarioEditarViewModel(usuarioRepository.GetById(id));
+        return View(usuarioEditar);
     }
 
     [HttpPost]
-    public IActionResult Editar(Usuario usuario)
+    public IActionResult Editar(UsuarioEditarViewModel usuarioVM)
     {   
+        Usuario usuario = new Usuario(usuarioVM);
         usuarioRepository.Update(usuario);
 
         return RedirectToAction("Index");
