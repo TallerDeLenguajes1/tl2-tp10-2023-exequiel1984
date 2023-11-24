@@ -42,7 +42,10 @@ public class TableroController : Controller
     [HttpGet]
     public IActionResult Crear()
     {   
-        return View(new Tablero());
+        if (!String.IsNullOrEmpty(HttpContext.Session.GetString("id")))
+            return View(new Tablero());
+        else
+            return RedirectToRoute(new{Controller = "Login", action = "Index"});
     }
 
     [HttpPost]
@@ -55,23 +58,30 @@ public class TableroController : Controller
     [HttpGet]
     public IActionResult Editar(int id)
     {  
-        Tablero tablero = tableroRepository.GetById(id);
-        return View(tablero);
+        if (!String.IsNullOrEmpty(HttpContext.Session.GetString("id")))
+        {
+            Tablero tablero = tableroRepository.GetById(id);
+            return View(tablero);
+        } else
+            return RedirectToRoute(new{Controller = "Login", action = "Index"});
     }
 
     [HttpPost]
     public IActionResult Editar(Tablero tablero)
     {   
         tableroRepository.UpDate(tablero);
-
         return RedirectToAction("Index");
     }
 
     
     public IActionResult Eliminar(int id)
     {  
-        tableroRepository.Remove(id);
-        return RedirectToAction("Index");
+        if (!String.IsNullOrEmpty(HttpContext.Session.GetString("id")))
+        {
+            tableroRepository.Remove(id);
+            return RedirectToAction("Index");
+        } else
+            return RedirectToRoute(new{Controller = "Login", action = "Index"});
     }
 
     public IActionResult Privacy()

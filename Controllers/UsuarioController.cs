@@ -69,11 +69,15 @@ public class UsuarioController : Controller
 
     [HttpPost]
     public IActionResult Editar(UsuarioEditarViewModel usuarioVM)
-    {   
-        Usuario usuario = new Usuario(usuarioVM);
-        usuarioRepository.Update(usuario);
-
-        return RedirectToAction("Index");
+    {  
+        if (HttpContext.Session.GetString("rol") == NivelDeAcceso.administrador.ToString()) 
+        { 
+            Usuario usuario = new Usuario(usuarioVM);
+            usuarioRepository.Update(usuario);
+            return RedirectToAction("Index");
+        }
+        else
+            return RedirectToRoute(new{Controller = "Login", action = "Index"});
     }
 
     

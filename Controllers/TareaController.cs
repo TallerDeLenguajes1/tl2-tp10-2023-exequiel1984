@@ -20,11 +20,26 @@ public class TareaController : Controller
 
     public IActionResult Index()
     {
-        //int idTablero = 1;
-        //List<Tarea> tareas = tareaRepository.GetAllByIdTablero(idTablero);
-        List<Tarea> tareas = tareaRepository.GetAll();
-
-        return View(tareas);
+        if (!String.IsNullOrEmpty(HttpContext.Session.GetString("id")))
+        {
+            if (HttpContext.Session.GetString("rol") == NivelDeAcceso.administrador.ToString())
+            {
+                List<Tarea> tareas = tareaRepository.GetAll();
+                return View(tareas);
+            } else
+            {
+                if (HttpContext.Session.GetString("rol") == NivelDeAcceso.operador.ToString())
+                {
+                    int idUsuario = Convert.ToInt32(HttpContext.Session.GetString("id"));
+                    Tarea tarea = tareaRepository.GetById(idUsuario);
+                    List<Tarea> tareas = new List<Tarea>();
+                    tareas.Add(tarea);
+                    return View(tareas);
+                }
+            }
+        }
+        return RedirectToRoute(new{Controller = "Login", action = "Index"});
+        
     }
 
     [HttpGet]
