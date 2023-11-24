@@ -31,18 +31,13 @@ public class LoginController : Controller
         {
             LoguearUsuario(usuarioLogueado);
             return RedirectToRoute(new{Controller = "Tablero", action = "Index"});
-
-            /* if (HttpContext.Session.GetString("rol") == NivelDeAcceso.administrador.ToString()) 
-                return RedirectToRoute(new{Controller = "Usuario", action = "Index"});
-            else
-                return RedirectToRoute(new{Controller = "Tablero", action = "Index"});  */
         } else
-            return RedirectToAction("Index");
+            return RedirectToRoute(new{Controller = "Login", action = "Index"});
     }
 
     private void LoguearUsuario(Usuario usuario)
     {
-        HttpContext.Session.SetInt32("id", usuario.Id);
+        HttpContext.Session.SetString("id", usuario.Id.ToString());
         HttpContext.Session.SetString("usuario", usuario.NombreDeUsuario);
         HttpContext.Session.SetString("contrasenia", usuario.Contrasenia);
         HttpContext.Session.SetString("rol", usuario.Rol.ToString());

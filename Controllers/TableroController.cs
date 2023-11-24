@@ -20,16 +20,23 @@ public class TableroController : Controller
 
     public IActionResult Index()
     {
-        if (HttpContext.Session.GetString("rol") == NivelDeAcceso.administrador.ToString()) 
+        if (!String.IsNullOrEmpty(HttpContext.Session.GetString("id")))
         {
-            List<Tablero> tableros = tableroRepository.GetAll(); 
-            return View(tableros);
+            if (HttpContext.Session.GetString("rol") == NivelDeAcceso.administrador.ToString()) 
+            {
+                List<Tablero> tableros = tableroRepository.GetAll(); 
+                return View(tableros);
+            }
+            else
+            {
+                if (HttpContext.Session.GetString("rol") == NivelDeAcceso.operador.ToString()) 
+                {
+                    List<Tablero> tableros = tableroRepository.GetAllByIdUsuario(Convert.ToInt32(HttpContext.Session.GetString("id")));
+                    return View(tableros);
+                }
+            }
         }
-        else
-        {
-            List<Tablero> tableros = tableroRepository.GetAllByIdUsuario(Convert.ToInt32(HttpContext.Session.GetInt32("id")));
-            return View(tableros);
-        }
+        return RedirectToRoute(new{Controller = "Login", action = "Index"});
     }
 
     [HttpGet]

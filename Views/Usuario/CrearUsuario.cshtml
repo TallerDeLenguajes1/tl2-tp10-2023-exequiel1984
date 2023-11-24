@@ -1,11 +1,13 @@
-@model Usuario
+@using tl2_tp10_2023_exequiel1984.ViewModels;
+
+@model UsuarioCrearViewModel
 
 
 <form asp-controller="Usuario" asp-action="CrearUsuario">
     <legend>ALTA DE USUARIO</legend>
     <div class="form-group">
-        <label asp-for="@Model.NombreDeUsuario"></label>
-        <input asp-for="@Model.NombreDeUsuario" class="form-control" />
+        <label asp-for="@Model.Nombre"></label>
+        <input asp-for="@Model.Nombre" class="form-control" />
     </div>
     <div class="form-group">
         <label asp-for="@Model.Contrasenia"></label>

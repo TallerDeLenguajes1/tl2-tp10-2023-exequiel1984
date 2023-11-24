@@ -69,6 +69,8 @@ namespace tl2_tp10_2023_exequiel1984.Models
                     {
                         usuario.Id = Convert.ToInt32(reader["id"]);
                         usuario.NombreDeUsuario = reader["nombre_de_usuario"].ToString();
+                        usuario.Contrasenia = reader["contrasenia"].ToString();
+                        usuario.Rol = (NivelDeAcceso) Convert.ToInt32(reader["rol"]);
                     }
                 }
                 connection.Close();

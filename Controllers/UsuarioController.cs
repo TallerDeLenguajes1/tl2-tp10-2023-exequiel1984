@@ -21,7 +21,7 @@ public class UsuarioController : Controller
 
     public IActionResult Index()
     {
-        if (!String.IsNullOrEmpty(HttpContext.Session.GetString("usuario")))
+        if (!String.IsNullOrEmpty(HttpContext.Session.GetString("id")))
         {
             if (HttpContext.Session.GetString("rol") == NivelDeAcceso.administrador.ToString())
             {
@@ -29,8 +29,15 @@ public class UsuarioController : Controller
                 return View(usuarios);
             } else
             {
-                IndexUsuarioViewModel usuarios = new IndexUsuarioViewModel(usuarioRepository.GetById(HttpContext.Session.GetInt32("id"))) ;
-                return View(usuarios);
+                if (HttpContext.Session.GetString("rol") == NivelDeAcceso.operador.ToString())
+                {
+                    int idUsuario = Convert.ToInt32(HttpContext.Session.GetString("id"));
+                    Usuario usuario = usuarioRepository.GetById(idUsuario);
+                    List<Usuario> ListaUsuarios = new List<Usuario>();
+                    ListaUsuarios.Add(usuario);
+                    IndexUsuarioViewModel usuarios = new IndexUsuarioViewModel(ListaUsuarios) ;
+                    return View(usuarios);
+                }
             }
         }
         return RedirectToRoute(new{Controller = "Login", action = "Index"});
@@ -40,15 +47,15 @@ public class UsuarioController : Controller
     public IActionResult CrearUsuario()
     {   
         if (HttpContext.Session.GetString("rol") == NivelDeAcceso.administrador.ToString()) 
-        {
-            return View(new Usuario());
-        }
-        return RedirectToRoute(new{Controller = "Login", action = "Index"});
+            return View(new UsuarioCrearViewModel());
+        else
+            return RedirectToRoute(new{Controller = "Login", action = "Index"});
     }
 
     [HttpPost]
-    public IActionResult CrearUsuario(Usuario usuario)
+    public IActionResult CrearUsuario(UsuarioCrearViewModel usuarioVM)
     {   
+        Usuario usuario = new Usuario (usuarioVM);
         usuarioRepository.Create(usuario);
         return RedirectToAction("Index");
     }
@@ -72,8 +79,13 @@ public class UsuarioController : Controller
     
     public IActionResult Eliminar(int id)
     {  
-        usuarioRepository.Remove(id);
-        return RedirectToAction("Index");
+        if (HttpContext.Session.GetString("rol") == NivelDeAcceso.administrador.ToString()) 
+        {
+            usuarioRepository.Remove(id);
+            return RedirectToAction("Index");
+        }
+        else
+            return RedirectToRoute(new{Controller = "Login", action = "Index"});
     }
 
     public IActionResult Privacy()

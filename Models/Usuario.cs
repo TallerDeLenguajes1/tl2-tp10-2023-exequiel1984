@@ -41,5 +41,12 @@ namespace tl2_tp10_2023_exequiel1984.Models
             this.Contrasenia = usuario.Contrasenia;
             this.Rol = usuario.Rol;
         }
+
+        public Usuario(UsuarioCrearViewModel usuario){
+            this.Id = usuario.Id;
+            this.NombreDeUsuario = usuario.Nombre;
+            this.Contrasenia = usuario.Contrasenia;
+            this.Rol = usuario.Rol;
+        }
     }
 }
