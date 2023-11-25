@@ -12,10 +12,5 @@ namespace tl2_tp10_2023_exequiel1984.ViewModels
         //[PasswordPropertyText]
         [Display(Name = "Contraseña")]
         public string Contrasenia {get;set;}
-        
-        /* public LoginViewModel()
-        {
-            
-        } */
     }
 }

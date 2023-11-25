@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using tl2_tp10_2023_exequiel1984.Models;
+using tl2_tp10_2023_exequiel1984.ViewModels;
 
 namespace tl2_tp10_2023_exequiel1984.Controllers;
 
@@ -20,7 +21,7 @@ public class TableroController : Controller
 
     public IActionResult Index()
     {
-        if (!String.IsNullOrEmpty(HttpContext.Session.GetString("id")))
+        if (!String.IsNullOrEmpty(HttpContext.Session.GetString("usuario")))
         {
             if (HttpContext.Session.GetString("rol") == NivelDeAcceso.administrador.ToString()) 
             {
@@ -43,34 +44,50 @@ public class TableroController : Controller
     public IActionResult Crear()
     {   
         if (!String.IsNullOrEmpty(HttpContext.Session.GetString("id")))
-            return View(new Tablero());
+            return View(new CrearTableroViewModel());
         else
             return RedirectToRoute(new{Controller = "Login", action = "Index"});
     }
 
     [HttpPost]
-    public IActionResult Crear(Tablero tablero)
+    public IActionResult Crear(CrearTableroViewModel tableroVM)
     {   
-        _tableroRepository.Create(tablero);
-        return RedirectToAction("Index");
+        if (!String.IsNullOrEmpty(HttpContext.Session.GetString("usuario")))
+        {
+            if (HttpContext.Session.GetString("rol") == NivelDeAcceso.operador.ToString()) 
+            {
+                if(!ModelState.IsValid) return RedirectToRoute(new{Controller = "Login", action = "Index"});
+                Tablero tablero = new Tablero(tableroVM);
+                _tableroRepository.Create(tablero);
+                return RedirectToAction("Index");
+            } else
+                return RedirectToRoute(new{Controller = "Login", action = "Index"});
+        } else
+            return RedirectToRoute(new{Controller = "Login", action = "Index"});
     }
 
     [HttpGet]
     public IActionResult Editar(int id)
     {  
-        if (!String.IsNullOrEmpty(HttpContext.Session.GetString("id")))
+        if (!String.IsNullOrEmpty(HttpContext.Session.GetString("usuario")))
         {
-            Tablero tablero = _tableroRepository.GetById(id);
-            return View(tablero);
+            EditarTableroViewModel tableroVM = new EditarTableroViewModel(_tableroRepository.GetById(id));
+            return View(tableroVM);
         } else
             return RedirectToRoute(new{Controller = "Login", action = "Index"});
     }
 
     [HttpPost]
-    public IActionResult Editar(Tablero tablero)
+    public IActionResult Editar(EditarTableroViewModel tableroVM)
     {   
-        _tableroRepository.UpDate(tablero);
-        return RedirectToAction("Index");
+        if (!String.IsNullOrEmpty(HttpContext.Session.GetString("usuario")))
+        {
+            if(!ModelState.IsValid) return RedirectToRoute(new{Controller = "Login", action = "Index"});
+            Tablero tablero = new Tablero(tableroVM);
+            _tableroRepository.UpDate(tablero);
+            return RedirectToAction("Index");
+        } else
+            return RedirectToRoute(new{Controller = "Login", action = "Index"});
     }
 
     
