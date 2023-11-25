@@ -8,13 +8,13 @@ public class TareaController : Controller
 {
     private readonly ILogger<TareaController> _logger;
 
-    private ITareaRepository tareaRepository;
+    private readonly ITareaRepository _tareaRepository;
 
 
-    public TareaController(ILogger<TareaController> logger)
+    public TareaController(ILogger<TareaController> logger, ITareaRepository tareaRepository)
     {
         _logger = logger;
-        tareaRepository = new TareaRepository();
+        _tareaRepository = tareaRepository;
 
     }
 
@@ -24,14 +24,14 @@ public class TareaController : Controller
         {
             if (HttpContext.Session.GetString("rol") == NivelDeAcceso.administrador.ToString())
             {
-                List<Tarea> tareas = tareaRepository.GetAll();
+                List<Tarea> tareas = _tareaRepository.GetAll();
                 return View(tareas);
             } else
             {
                 if (HttpContext.Session.GetString("rol") == NivelDeAcceso.operador.ToString())
                 {
                     int idUsuario = Convert.ToInt32(HttpContext.Session.GetString("id"));
-                    Tarea tarea = tareaRepository.GetById(idUsuario);
+                    Tarea tarea = _tareaRepository.GetById(idUsuario);
                     List<Tarea> tareas = new List<Tarea>();
                     tareas.Add(tarea);
                     return View(tareas);
@@ -45,14 +45,14 @@ public class TareaController : Controller
     [HttpGet]
     public IActionResult ListarTareasPorIdTablero(int idTablero)
     {
-        List<Tarea> tareas = tareaRepository.GetAllByIdTablero(idTablero);
+        List<Tarea> tareas = _tareaRepository.GetAllByIdTablero(idTablero);
         return View(tareas);
     }
 
     [HttpGet]
     public IActionResult ListarTareasPorIdUsuario(int idUsuario)
     {
-        List<Tarea> tareas = tareaRepository.GetAllByIdUsuario(idUsuario);
+        List<Tarea> tareas = _tareaRepository.GetAllByIdUsuario(idUsuario);
         return View(tareas);
     }
 
@@ -65,21 +65,21 @@ public class TareaController : Controller
     [HttpPost]
     public IActionResult Crear(Tarea tarea)
     {   
-        tareaRepository.Create(tarea);
+        _tareaRepository.Create(tarea);
         return RedirectToAction("Index");
     }
 
     [HttpGet]
     public IActionResult Editar(int id)
     {  
-        Tarea tarea = tareaRepository.GetById(id);
+        Tarea tarea = _tareaRepository.GetById(id);
         return View(tarea);
     }
 
     [HttpPost]
     public IActionResult Editar(Tarea tarea)
     {   
-        tareaRepository.UpDateNombre(tarea.Id, tarea.Nombre);
+        _tareaRepository.UpDateNombre(tarea.Id, tarea.Nombre);
 
         return RedirectToAction("Index");
     }
@@ -87,7 +87,7 @@ public class TareaController : Controller
     
     public IActionResult Eliminar(int id)
     {  
-        tareaRepository.Remove(id);
+        _tareaRepository.Remove(id);
         return RedirectToAction("Index");
     }
 
