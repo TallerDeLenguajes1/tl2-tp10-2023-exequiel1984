@@ -6,12 +6,17 @@ namespace tl2_tp10_2023_exequiel1984.Models
 {
     public class UsuarioRepository : IUsuarioRepository
     {
-        private string cadenaConexion = "Data Source=DB/kanban.db;Cache=Shared";
+        private readonly string _cadenaConexion;
+
+        public UsuarioRepository(string cadenaConexion)
+        {
+            _cadenaConexion = cadenaConexion;
+        }
 
         public void Create(Usuario usuario)
         {
             var query = $"INSERT INTO Usuario (nombre_de_usuario, contrasenia, rol) VALUES (@nombre, @contrasenia, @rol)";
-            using (SQLiteConnection connection = new SQLiteConnection(cadenaConexion))
+            using (SQLiteConnection connection = new SQLiteConnection(_cadenaConexion))
             {
 
                 connection.Open();
@@ -30,7 +35,7 @@ namespace tl2_tp10_2023_exequiel1984.Models
         {
             var queryString = @"SELECT * FROM Usuario;";
             List<Usuario> usuarios = new List<Usuario>();
-            using (SQLiteConnection connection = new SQLiteConnection(cadenaConexion))
+            using (SQLiteConnection connection = new SQLiteConnection(_cadenaConexion))
             {
                 SQLiteCommand command = new SQLiteCommand(queryString, connection);
                 connection.Open();
@@ -57,7 +62,7 @@ namespace tl2_tp10_2023_exequiel1984.Models
         public Usuario GetById(int id)
         {
             Usuario usuario = new Usuario();
-            using (SQLiteConnection connection = new SQLiteConnection(cadenaConexion))
+            using (SQLiteConnection connection = new SQLiteConnection(_cadenaConexion))
             {
                 string queryString = @"SELECT * FROM Usuario WHERE id = @idUsuario;";
                 var command = new SQLiteCommand(queryString, connection);
@@ -81,7 +86,7 @@ namespace tl2_tp10_2023_exequiel1984.Models
         public Usuario GetUsuarioLogin(string nombre, string contrasenia)
         {
             Usuario usuario = new Usuario();
-            using (SQLiteConnection connection = new SQLiteConnection(cadenaConexion))
+            using (SQLiteConnection connection = new SQLiteConnection(_cadenaConexion))
             {
                 string queryString = @"SELECT * FROM Usuario WHERE nombre_de_usuario = @nombre AND contrasenia = @contrasenia;";
                 var command = new SQLiteCommand(queryString, connection);
@@ -104,7 +109,7 @@ namespace tl2_tp10_2023_exequiel1984.Models
         }
 
         public void Update(Usuario usuario){
-            using (SQLiteConnection connection = new SQLiteConnection(cadenaConexion))
+            using (SQLiteConnection connection = new SQLiteConnection(_cadenaConexion))
             {
                 var queryString = @"UPDATE Usuario SET nombre_de_usuario = @nombre WHERE id = @idUsuario;";
                 connection.Open();
@@ -118,7 +123,7 @@ namespace tl2_tp10_2023_exequiel1984.Models
 
         public void Remove(int id)
         {
-            using (SQLiteConnection connection = new SQLiteConnection(cadenaConexion))
+            using (SQLiteConnection connection = new SQLiteConnection(_cadenaConexion))
             {
                 string query = @"DELETE FROM Usuario WHERE id = @id;";
                 connection.Open();

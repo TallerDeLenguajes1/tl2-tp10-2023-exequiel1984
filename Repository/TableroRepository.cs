@@ -4,14 +4,19 @@ namespace tl2_tp10_2023_exequiel1984.Models
 {
     public class TableroRepository : ITableroRepository
     {
-        private string cadenaConexion = "Data Source=DB/kanban.db;Cache=Shared";
+        private readonly string _cadenaConexion;
+
+        public TableroRepository(string cadenaConexion)
+        {
+            _cadenaConexion = cadenaConexion;
+        }
 
         public Tablero Create(Tablero tablero)
         {
             var query = @"
             INSERT INTO Tablero (id_usuario_propietario, nombre, descripcion)
             VALUES (@usuarioPropietario, @nombre , @descripcion);";
-            using (SQLiteConnection connection = new SQLiteConnection(cadenaConexion))
+            using (SQLiteConnection connection = new SQLiteConnection(_cadenaConexion))
             {
                 connection.Open();
                 SQLiteCommand command = new SQLiteCommand(query, connection);
@@ -26,7 +31,7 @@ namespace tl2_tp10_2023_exequiel1984.Models
 
         public void UpDate(Tablero tablero)
         {
-            using (SQLiteConnection connection = new SQLiteConnection(cadenaConexion))
+            using (SQLiteConnection connection = new SQLiteConnection(_cadenaConexion))
             {
                 var queryString = @"
                 UPDATE Tablero SET id_usuario_propietario = @idUsuarioPropietario, nombre = @nombre, descripcion = @descripcion
@@ -45,7 +50,7 @@ namespace tl2_tp10_2023_exequiel1984.Models
         public Tablero GetById(int id)
         {
             Tablero tablero = new Tablero();
-            using (SQLiteConnection connection = new SQLiteConnection(cadenaConexion))
+            using (SQLiteConnection connection = new SQLiteConnection(_cadenaConexion))
             {
                 string queryString = @"SELECT * FROM Tablero WHERE id = @id;";
                 var command = new SQLiteCommand(queryString, connection);
@@ -63,6 +68,8 @@ namespace tl2_tp10_2023_exequiel1984.Models
                 }
                 connection.Close();
             }
+            if (tablero == null)
+                throw new Exception("Tablero no creado");
             return tablero;
         }
         
@@ -70,7 +77,7 @@ namespace tl2_tp10_2023_exequiel1984.Models
         {
             string query = @"SELECT * FROM Tablero;";
             List<Tablero> tableros = new List<Tablero>();
-            using (SQLiteConnection connection = new SQLiteConnection(cadenaConexion))
+            using (SQLiteConnection connection = new SQLiteConnection(_cadenaConexion))
             {
                 SQLiteCommand command = new SQLiteCommand(query, connection);
                 connection.Open();
@@ -97,7 +104,7 @@ namespace tl2_tp10_2023_exequiel1984.Models
         {
             string query = @"SELECT * FROM Tablero WHERE id_usuario_propietario = @idUsuario;";
             List<Tablero> tableros = new List<Tablero>();
-            using (SQLiteConnection connection = new SQLiteConnection(cadenaConexion))
+            using (SQLiteConnection connection = new SQLiteConnection(_cadenaConexion))
             {
                 SQLiteCommand command = new SQLiteCommand(query, connection);
                 command.Parameters.Add(new SQLiteParameter("@idUsuario", idUsuario));
@@ -123,7 +130,7 @@ namespace tl2_tp10_2023_exequiel1984.Models
 
         public void Remove(int id)
         {
-            using (SQLiteConnection connection = new SQLiteConnection(cadenaConexion))
+            using (SQLiteConnection connection = new SQLiteConnection(_cadenaConexion))
             {
                 string query = @"DELETE FROM Tablero WHERE id = @id;";
                 connection.Open();

@@ -55,19 +55,23 @@ public class UsuarioController : Controller
     [HttpPost]
     public IActionResult CrearUsuario(UsuarioCrearViewModel usuarioVM)
     {   
-        if (!String.IsNullOrEmpty(HttpContext.Session.GetString("id")))
+        if (string.IsNullOrEmpty(HttpContext.Session.GetString("id"))) return RedirectToRoute(new{Controller = "Login", action = "Index"});
+        
+        if (HttpContext.Session.GetString("rol") != NivelDeAcceso.administrador.ToString()) return RedirectToRoute(new{Controller = "Login", action = "Index"}); 
+            
+        if(!ModelState.IsValid) return RedirectToRoute(new{Controller = "Login", action = "Index"});
+        
+        try
         {
-            if (HttpContext.Session.GetString("rol") == NivelDeAcceso.administrador.ToString()) 
-            {
-                if(!ModelState.IsValid) return RedirectToRoute(new{Controller = "Login", action = "Index"});
-                Usuario usuario = new Usuario (usuarioVM);
-                _usuarioRepository.Create(usuario);
-                return RedirectToAction("Index");
-            } else
-                return RedirectToRoute(new{Controller = "Login", action = "Index"});
-
-        } else
-            return RedirectToRoute(new{Controller = "Login", action = "Index"});
+            Usuario usuario = new Usuario (usuarioVM);
+            _usuarioRepository.Create(usuario);
+            return RedirectToAction("Index");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex.ToString());
+            return BadRequest();
+        }
     }
 
     [HttpGet]

@@ -26,13 +26,18 @@ public class LoginController : Controller
     [HttpPost]
     public IActionResult Login(LoginViewModel loginUsuario)
     {
+        //PONER TRY CATCH
         Usuario usuarioLogueado = _usuarioRepository.GetUsuarioLogin(loginUsuario.Nombre, loginUsuario.Contrasenia);
         if (!string.IsNullOrEmpty(usuarioLogueado.NombreDeUsuario))
         {
+            _logger.LogInformation("El usuario logueado " + usuarioLogueado.NombreDeUsuario + " ingreso correctamente");
             LoguearUsuario(usuarioLogueado);
             return RedirectToRoute(new{Controller = "Tablero", action = "Index"});
         } else
+        {
+            _logger.LogInformation("Intento de acceso invalido - Usuario: " + loginUsuario.Nombre + " Clave ingresada: " + loginUsuario.Contrasenia);
             return RedirectToRoute(new{Controller = "Login", action = "Index"});
+        }
     }
 
     private void LoguearUsuario(Usuario usuario)
