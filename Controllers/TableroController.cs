@@ -66,7 +66,7 @@ public class TableroController : NuevoController
     {   
         if (!String.IsNullOrEmpty(HttpContext.Session.GetString("usuario")))
         {
-            if (HttpContext.Session.GetString("rol") == NivelDeAcceso.operador.ToString()) 
+            if (HttpContext.Session.GetString("rol") == NivelDeAcceso.administrador.ToString()) 
             {
                 if(!ModelState.IsValid) return RedirectToRoute(new{Controller = "Login", action = "Index"});
                 Tablero tablero = new Tablero(tableroVM);
