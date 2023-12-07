@@ -5,31 +5,29 @@ using tl2_tp10_2023_exequiel1984.ViewModels;
 
 namespace tl2_tp10_2023_exequiel1984.Controllers;
 
-public class UsuarioController : Controller
+public class UsuarioController : NuevoController
 {
     private readonly ILogger<UsuarioController> _logger;
-
     private readonly IUsuarioRepository _usuarioRepository;
-
 
     public UsuarioController(ILogger<UsuarioController> logger, IUsuarioRepository usuarioRepository)
     {
         _logger = logger;
         _usuarioRepository = usuarioRepository;
-
     }
 
     public IActionResult Index()
     {
-        if (!String.IsNullOrEmpty(HttpContext.Session.GetString("id")))
+        if (!IsLoged()) return RedirectToRoute(new { Controller = "Login", action = "Index" });
+        try
         {
-            if (HttpContext.Session.GetString("rol") == NivelDeAcceso.administrador.ToString())
+            if (IsAdmin())
             {
                 IndexUsuarioViewModel usuarios = new IndexUsuarioViewModel(_usuarioRepository.GetAll()) ;
                 return View(usuarios);
             } else
             {
-                if (HttpContext.Session.GetString("rol") == NivelDeAcceso.operador.ToString())
+                if (IsOperador())
                 {
                     int idUsuario = HttpContext.Session.GetInt32("id").Value;
                     Usuario usuario = _usuarioRepository.GetById(idUsuario);
@@ -37,28 +35,38 @@ public class UsuarioController : Controller
                     ListaUsuarios.Add(usuario);
                     IndexUsuarioViewModel usuarios = new IndexUsuarioViewModel(ListaUsuarios) ;
                     return View(usuarios);
-                }
+                } else
+                    return RedirectToRoute(new { Controller = "Login", action = "Index" });
             }
         }
-        return RedirectToRoute(new{Controller = "Login", action = "Index"});
+        catch(Exception ex)
+        {
+            _logger.LogError(ex.ToString());
+            return BadRequest();
+        } 
     }
 
     [HttpGet]
     public IActionResult CrearUsuario()
     {   
-        if (HttpContext.Session.GetString("rol") == NivelDeAcceso.administrador.ToString()) 
+        if (!IsLoged()) return RedirectToRoute(new { Controller = "Login", action = "Index" });
+        if (!IsAdmin()) return RedirectToRoute(new { Controller = "Login", action = "Index" });
+        try
+        {
             return View(new UsuarioCrearViewModel());
-        else
-            return RedirectToRoute(new{Controller = "Login", action = "Index"});
+        }
+        catch(Exception ex)
+        {
+            _logger.LogError(ex.ToString());
+            return BadRequest();
+        } 
     }
 
     [HttpPost]
     public IActionResult CrearUsuario(UsuarioCrearViewModel usuarioVM)
     {   
-        if (string.IsNullOrEmpty(HttpContext.Session.GetString("id"))) return RedirectToRoute(new{Controller = "Login", action = "Index"});
-        
-        if (HttpContext.Session.GetString("rol") != NivelDeAcceso.administrador.ToString()) return RedirectToRoute(new{Controller = "Login", action = "Index"}); 
-            
+        if (!IsLoged()) return RedirectToRoute(new { Controller = "Login", action = "Index" });
+        if (!IsAdmin()) return RedirectToRoute(new{Controller = "Login", action = "Index"}); 
         if(!ModelState.IsValid) return RedirectToRoute(new{Controller = "Login", action = "Index"});
         
         try
@@ -77,34 +85,58 @@ public class UsuarioController : Controller
     [HttpGet]
     public IActionResult Editar(int id)
     {  
-        UsuarioEditarViewModel usuarioEditar = new UsuarioEditarViewModel(_usuarioRepository.GetById(id));
-        return View(usuarioEditar);
+        if (!IsLoged()) return RedirectToRoute(new { Controller = "Login", action = "Index" });
+        try
+        {
+            UsuarioEditarViewModel usuarioEditar = new UsuarioEditarViewModel(_usuarioRepository.GetById(id));
+            return View(usuarioEditar);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex.ToString());
+            return BadRequest();
+        }
     }
 
     [HttpPost]
     public IActionResult Editar(UsuarioEditarViewModel usuarioVM)
     {  
-        if (HttpContext.Session.GetString("rol") == NivelDeAcceso.administrador.ToString()) 
-        { 
+        if (!IsLoged()) return RedirectToRoute(new { Controller = "Login", action = "Index" });
+        if (!IsAdmin()) return RedirectToRoute(new{Controller = "Login", action = "Index"}); 
+        if(!ModelState.IsValid) return RedirectToRoute(new{Controller = "Login", action = "Index"});
+        try
+        {
             Usuario usuario = new Usuario(usuarioVM);
             _usuarioRepository.Update(usuario);
             return RedirectToAction("Index");
         }
-        else
-            return RedirectToRoute(new{Controller = "Login", action = "Index"});
+        catch (Exception ex)
+        {
+            _logger.LogError(ex.ToString());
+            return BadRequest();
+        }
     }
 
-    
+    //Soy Post?
     public IActionResult Eliminar(int id)
     {  
-        if (HttpContext.Session.GetString("rol") == NivelDeAcceso.administrador.ToString()) 
+        if (!IsLoged()) return RedirectToRoute(new { Controller = "Login", action = "Index" });
+        if (!IsAdmin()) return RedirectToRoute(new{Controller = "Login", action = "Index"}); 
+        if(!ModelState.IsValid) return RedirectToRoute(new{Controller = "Login", action = "Index"});
+        try
         {
             _usuarioRepository.Remove(id);
             return RedirectToAction("Index");
         }
-        else
-            return RedirectToRoute(new{Controller = "Login", action = "Index"});
+        catch (Exception ex)
+        {
+            _logger.LogError(ex.ToString());
+            return BadRequest();
+        }
     }
+
+
+
 
     public IActionResult Privacy()
     {

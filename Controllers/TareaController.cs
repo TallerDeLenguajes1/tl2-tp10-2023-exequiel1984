@@ -18,10 +18,9 @@ public class TareaController : NuevoController
 
     public IActionResult Index()
     {
+        if (!IsLoged()) return RedirectToRoute(new { Controller = "Login", action = "Index" });
         try
         {
-            if (!IsLoged()) return RedirectToRoute(new { Controller = "Login", action = "Index" });
-
             if (IsAdmin())
             {
                 List<Tarea> tareas = _tareaRepository.GetAll();
@@ -41,126 +40,122 @@ public class TareaController : NuevoController
         }
         catch(Exception ex)
         {
-            _logger.LogError(ex.Message);
-            return RedirectToRoute(new{Controller = "Login", action = "Index"});
+            _logger.LogError(ex.ToString());
+            return BadRequest();
         } 
     }
 
     [HttpGet]
     public IActionResult ListarTareasPorIdTablero(int idTablero)
     {
+        if (!IsLoged()) return RedirectToRoute(new { Controller = "Login", action = "Index" });
         try
         {
-            if (!IsLoged()) return RedirectToRoute(new { Controller = "Login", action = "Index" });
-
             List<Tarea> tareas = _tareaRepository.GetAllByIdTablero(idTablero);
             return View(tareas);
         }
         catch(Exception ex)
         {
-            _logger.LogError(ex.Message);
-            return RedirectToRoute(new{Controller = "Login", action = "Index"});
+            _logger.LogError(ex.ToString());
+            return BadRequest();
         } 
     }
 
     [HttpGet]
     public IActionResult ListarTareasPorIdUsuario(int idUsuario)
     {
+        if (!IsLoged()) return RedirectToRoute(new { Controller = "Login", action = "Index" });
         try
         {
-            if (!IsLoged()) return RedirectToRoute(new { Controller = "Login", action = "Index" });
-
             List<Tarea> tareas = _tareaRepository.GetAllByIdUsuario(idUsuario);
             return View(tareas);
         }
         catch(Exception ex)
         {
-            _logger.LogError(ex.Message);
-            return RedirectToRoute(new{Controller = "Login", action = "Index"});
+            _logger.LogError(ex.ToString());
+            return BadRequest();
         } 
     }
 
     [HttpGet]
     public IActionResult Crear()
     {   
+        if (!IsLoged()) return RedirectToRoute(new { Controller = "Login", action = "Index" });
         try
         {
-            if (!IsLoged()) return RedirectToRoute(new { Controller = "Login", action = "Index" });
             return View(new Tarea());
         }
         catch(Exception ex)
         {
-            _logger.LogError(ex.Message);
-            return RedirectToRoute(new{Controller = "Login", action = "Index"});
+            _logger.LogError(ex.ToString());
+            return BadRequest();
         }
     }
 
     [HttpPost]
     public IActionResult Crear(Tarea tarea)
     {   
+        if (!IsLoged()) return RedirectToRoute(new { Controller = "Login", action = "Index" });
+        if(!ModelState.IsValid) return RedirectToRoute(new{Controller = "Login", action = "Index"});
         try
         {
-            if (!IsLoged()) return RedirectToRoute(new { Controller = "Login", action = "Index" });
-            if(!ModelState.IsValid) return RedirectToRoute(new{Controller = "Login", action = "Index"});
-
             _tareaRepository.Create(tarea);
             return RedirectToAction("Index");
         }
         catch(Exception ex)
         {
-            _logger.LogError(ex.Message);
-            return RedirectToRoute(new{Controller = "Login", action = "Index"});
+            _logger.LogError(ex.ToString());
+            return BadRequest();
         }
     }
 
     [HttpGet]
     public IActionResult Editar(int id)
     {  
+        if (!IsLoged()) return RedirectToRoute(new { Controller = "Login", action = "Index" });
         try
         {
-            if (!IsLoged()) return RedirectToRoute(new { Controller = "Login", action = "Index" });
             Tarea tarea = _tareaRepository.GetById(id);
             return View(tarea);
         }
         catch(Exception ex)
         {
-            _logger.LogError(ex.Message);
-            return RedirectToRoute(new{Controller = "Login", action = "Index"});
+            _logger.LogError(ex.ToString());
+            return BadRequest();
         }
     }
 
     [HttpPost]
     public IActionResult Editar(Tarea tarea)
     {   
+        if (!IsLoged()) return RedirectToRoute(new { Controller = "Login", action = "Index" });
+        if(!ModelState.IsValid) return RedirectToRoute(new{Controller = "Login", action = "Index"});
         try
         {
-            if (!IsLoged()) return RedirectToRoute(new { Controller = "Login", action = "Index" });
-            if(!ModelState.IsValid) return RedirectToRoute(new{Controller = "Login", action = "Index"});
-
             _tareaRepository.UpDateNombre(tarea.Id, tarea.Nombre);
             return RedirectToAction("Index");
         }
         catch(Exception ex)
         {
-            _logger.LogError(ex.Message);
-            return RedirectToRoute(new{Controller = "Login", action = "Index"});
+            _logger.LogError(ex.ToString());
+            return BadRequest();
         }
     }
 
-    
+    //Soy POST ?
     public IActionResult Eliminar(int id)
     {  
+        if (!IsLoged()) return RedirectToRoute(new { Controller = "Login", action = "Index" });
+        if(!ModelState.IsValid) return RedirectToRoute(new{Controller = "Login", action = "Index"});
         try
-        {
-            if (!IsLoged()) return RedirectToRoute(new { Controller = "Login", action = "Index" });
-            if(!ModelState.IsValid) return RedirectToRoute(new{Controller = "Login", action = "Index"});
+        {    
             _tareaRepository.Remove(id);
             return RedirectToAction("Index");
         }
         catch(Exception ex)
         {
-            _logger.LogError(ex.Message);
-            return RedirectToRoute(new{Controller = "Login", action = "Index"});
+            _logger.LogError(ex.ToString());
+            return BadRequest();
         }
     }
 

@@ -21,9 +21,10 @@ public class TableroController : NuevoController
 
     public IActionResult Index()
     {
+        
+        if (!IsLoged()) return RedirectToRoute(new { Controller = "Login", action = "Index" });
         try
-        {
-            if (!IsLoged()) return RedirectToRoute(new { Controller = "Login", action = "Index" });
+        {    
             if (IsAdmin()) 
             {
                 List<Tablero> tableros = _tableroRepository.GetAll(); 
@@ -41,61 +42,60 @@ public class TableroController : NuevoController
         }
         catch(Exception ex)
         {
-            _logger.LogError(ex.Message);
-            return RedirectToRoute(new{Controller = "Login", action = "Index"});
+            _logger.LogError(ex.ToString());
+            return BadRequest();
         }
     }
 
     [HttpGet]
     public IActionResult Crear()
     {
+        if (!IsLoged()) return RedirectToRoute(new { Controller = "Login", action = "Index" });
         try
-        {
-            if (!IsLoged()) return RedirectToRoute(new { Controller = "Login", action = "Index" });
+        {    
             List<Usuario> usuarios = _usuarioRepository.GetAll();
             return View(new CrearTableroViewModel(usuarios));
         }
         catch(Exception ex)
         {
-            _logger.LogError(ex.Message);
-            return RedirectToRoute(new{Controller = "Login", action = "Index"});
+            _logger.LogError(ex.ToString());
+            return BadRequest();
         }
     }
 
     [HttpPost]
     public IActionResult Crear(CrearTableroViewModel tableroVM)
     {   
+        if (!IsLoged()) return RedirectToRoute(new { Controller = "Login", action = "Index" });
+        if(!ModelState.IsValid) return RedirectToRoute(new{Controller = "Login", action = "Index"});
+        if (!IsAdmin()) return RedirectToRoute(new{Controller = "Login", action = "Index"});    
         try
-        {
-            if (!IsLoged()) return RedirectToRoute(new { Controller = "Login", action = "Index" });
-            if(!ModelState.IsValid) return RedirectToRoute(new{Controller = "Login", action = "Index"});
-            if (!IsAdmin()) return RedirectToRoute(new{Controller = "Login", action = "Index"});
-            
+        {    
             Tablero tablero = new Tablero(tableroVM);
             _tableroRepository.Create(tablero);
             return RedirectToAction("Index");  
         }
         catch(Exception ex)
         {
-            _logger.LogError(ex.Message);
-            return RedirectToRoute(new{Controller = "Login", action = "Index"});
+            _logger.LogError(ex.ToString());
+            return BadRequest();
         } 
     }
 
     [HttpGet]
     public IActionResult Editar(int id)
     {  
+        if (!IsLoged()) return RedirectToRoute(new { Controller = "Login", action = "Index" });
         try
         {
-            if (!IsLoged()) return RedirectToRoute(new { Controller = "Login", action = "Index" });
             Tablero tablero = _tableroRepository.GetById(id);
             EditarTableroViewModel tableroVM = new EditarTableroViewModel(tablero);
             return View(tableroVM);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex.Message);
-            return RedirectToRoute(new{Controller = "Login", action = "Index"});
+            _logger.LogError(ex.ToString());
+            return BadRequest();
         }
     }
 
@@ -103,37 +103,36 @@ public class TableroController : NuevoController
     [HttpPost]
     public IActionResult Editar(EditarTableroViewModel tableroVM)
     {   
-        try
-        {
-            if (!IsLoged()) return RedirectToRoute(new { Controller = "Login", action = "Index" });
-            if(!ModelState.IsValid) return RedirectToRoute(new{Controller = "Login", action = "Index"});
+        if (!IsLoged()) return RedirectToRoute(new { Controller = "Login", action = "Index" });
+        if(!ModelState.IsValid) return RedirectToRoute(new{Controller = "Login", action = "Index"});
             
+        try
+        {   
             Tablero tablero = new Tablero(tableroVM);
             _tableroRepository.UpDate(tablero);
             return RedirectToAction("Index");
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex.Message);
-            return RedirectToRoute(new{Controller = "Login", action = "Index"});
+            _logger.LogError(ex.ToString());
+            return BadRequest();
         }
     }
 
     //SOY POST ?
     public IActionResult Eliminar(int id)
     {  
+        if (!IsLoged()) return RedirectToRoute(new { Controller = "Login", action = "Index" });
+        if(!ModelState.IsValid) return RedirectToRoute(new{Controller = "Login", action = "Index"});
         try
         {
-            if (!IsLoged()) return RedirectToRoute(new { Controller = "Login", action = "Index" });
-            if(!ModelState.IsValid) return RedirectToRoute(new{Controller = "Login", action = "Index"});
-            
             _tableroRepository.Remove(id);
             return RedirectToAction("Index");
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex.Message);
-            return RedirectToRoute(new{Controller = "Login", action = "Index"});
+            _logger.LogError(ex.ToString());
+            return BadRequest();
         }
     }
 
