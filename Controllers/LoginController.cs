@@ -9,7 +9,6 @@ namespace tl2_tp10_2023_exequiel1984.Controllers;
 public class LoginController : Controller
 {
     private readonly ILogger<LoginController> _logger;
-
     private readonly IUsuarioRepository _usuarioRepository;
 
     public LoginController(ILogger<LoginController> logger, IUsuarioRepository usuarioRepository)
@@ -44,8 +43,8 @@ public class LoginController : Controller
         }
         catch (System.Exception ex)
         {
-            _logger.LogError(ex.Message);
-            return RedirectToRoute(new{Controller = "Login", action = "Index"});
+            _logger.LogError(ex.ToString());
+            return BadRequest();
         }
     }
 

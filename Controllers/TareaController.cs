@@ -4,12 +4,10 @@ using tl2_tp10_2023_exequiel1984.Models;
 
 namespace tl2_tp10_2023_exequiel1984.Controllers;
 
-public class TareaController : Controller
+public class TareaController : NuevoController
 {
     private readonly ILogger<TareaController> _logger;
-
     private readonly ITareaRepository _tareaRepository;
-
 
     public TareaController(ILogger<TareaController> logger, ITareaRepository tareaRepository)
     {
@@ -20,76 +18,154 @@ public class TareaController : Controller
 
     public IActionResult Index()
     {
-        if (!String.IsNullOrEmpty(HttpContext.Session.GetString("id")))
+        try
         {
-            if (HttpContext.Session.GetString("rol") == NivelDeAcceso.administrador.ToString())
+            if (!IsLoged()) return RedirectToRoute(new { Controller = "Login", action = "Index" });
+
+            if (IsAdmin())
             {
                 List<Tarea> tareas = _tareaRepository.GetAll();
                 return View(tareas);
             } else
             {
-                if (HttpContext.Session.GetString("rol") == NivelDeAcceso.operador.ToString())
+                if (IsOperador())
                 {
                     int idUsuario = Convert.ToInt32(HttpContext.Session.GetString("id"));
                     Tarea tarea = _tareaRepository.GetById(idUsuario);
                     List<Tarea> tareas = new List<Tarea>();
                     tareas.Add(tarea);
                     return View(tareas);
-                }
+                } else
+                    return RedirectToRoute(new { Controller = "Login", action = "Index" });
             }
         }
-        return RedirectToRoute(new{Controller = "Login", action = "Index"});
-        
+        catch(Exception ex)
+        {
+            _logger.LogError(ex.Message);
+            return RedirectToRoute(new{Controller = "Login", action = "Index"});
+        } 
     }
 
     [HttpGet]
     public IActionResult ListarTareasPorIdTablero(int idTablero)
     {
-        List<Tarea> tareas = _tareaRepository.GetAllByIdTablero(idTablero);
-        return View(tareas);
+        try
+        {
+            if (!IsLoged()) return RedirectToRoute(new { Controller = "Login", action = "Index" });
+
+            List<Tarea> tareas = _tareaRepository.GetAllByIdTablero(idTablero);
+            return View(tareas);
+        }
+        catch(Exception ex)
+        {
+            _logger.LogError(ex.Message);
+            return RedirectToRoute(new{Controller = "Login", action = "Index"});
+        } 
     }
 
     [HttpGet]
     public IActionResult ListarTareasPorIdUsuario(int idUsuario)
     {
-        List<Tarea> tareas = _tareaRepository.GetAllByIdUsuario(idUsuario);
-        return View(tareas);
+        try
+        {
+            if (!IsLoged()) return RedirectToRoute(new { Controller = "Login", action = "Index" });
+
+            List<Tarea> tareas = _tareaRepository.GetAllByIdUsuario(idUsuario);
+            return View(tareas);
+        }
+        catch(Exception ex)
+        {
+            _logger.LogError(ex.Message);
+            return RedirectToRoute(new{Controller = "Login", action = "Index"});
+        } 
     }
 
     [HttpGet]
     public IActionResult Crear()
     {   
-        return View(new Tarea());
+        try
+        {
+            if (!IsLoged()) return RedirectToRoute(new { Controller = "Login", action = "Index" });
+            return View(new Tarea());
+        }
+        catch(Exception ex)
+        {
+            _logger.LogError(ex.Message);
+            return RedirectToRoute(new{Controller = "Login", action = "Index"});
+        }
     }
 
     [HttpPost]
     public IActionResult Crear(Tarea tarea)
     {   
-        _tareaRepository.Create(tarea);
-        return RedirectToAction("Index");
+        try
+        {
+            if (!IsLoged()) return RedirectToRoute(new { Controller = "Login", action = "Index" });
+            if(!ModelState.IsValid) return RedirectToRoute(new{Controller = "Login", action = "Index"});
+
+            _tareaRepository.Create(tarea);
+            return RedirectToAction("Index");
+        }
+        catch(Exception ex)
+        {
+            _logger.LogError(ex.Message);
+            return RedirectToRoute(new{Controller = "Login", action = "Index"});
+        }
     }
 
     [HttpGet]
     public IActionResult Editar(int id)
     {  
-        Tarea tarea = _tareaRepository.GetById(id);
-        return View(tarea);
+        try
+        {
+            if (!IsLoged()) return RedirectToRoute(new { Controller = "Login", action = "Index" });
+            Tarea tarea = _tareaRepository.GetById(id);
+            return View(tarea);
+        }
+        catch(Exception ex)
+        {
+            _logger.LogError(ex.Message);
+            return RedirectToRoute(new{Controller = "Login", action = "Index"});
+        }
     }
 
     [HttpPost]
     public IActionResult Editar(Tarea tarea)
     {   
-        _tareaRepository.UpDateNombre(tarea.Id, tarea.Nombre);
+        try
+        {
+            if (!IsLoged()) return RedirectToRoute(new { Controller = "Login", action = "Index" });
+            if(!ModelState.IsValid) return RedirectToRoute(new{Controller = "Login", action = "Index"});
 
-        return RedirectToAction("Index");
+            _tareaRepository.UpDateNombre(tarea.Id, tarea.Nombre);
+            return RedirectToAction("Index");
+        }
+        catch(Exception ex)
+        {
+            _logger.LogError(ex.Message);
+            return RedirectToRoute(new{Controller = "Login", action = "Index"});
+        }
     }
 
     
     public IActionResult Eliminar(int id)
     {  
-        _tareaRepository.Remove(id);
-        return RedirectToAction("Index");
+        try
+        {
+            if (!IsLoged()) return RedirectToRoute(new { Controller = "Login", action = "Index" });
+            if(!ModelState.IsValid) return RedirectToRoute(new{Controller = "Login", action = "Index"});
+            _tareaRepository.Remove(id);
+            return RedirectToAction("Index");
+        }
+        catch(Exception ex)
+        {
+            _logger.LogError(ex.Message);
+            return RedirectToRoute(new{Controller = "Login", action = "Index"});
+        }
     }
+
+
+
 
     public IActionResult Privacy()
     {
