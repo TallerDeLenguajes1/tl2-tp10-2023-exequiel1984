@@ -1,0 +1,14 @@
+@using tl2_tp10_2023_exequiel1984.ViewModels;
+@model GetTableroByIdViewModel
+
+<h1>Get TABLERO POR ID</h1>
+<form asp-controller="Tablero" asp-action="TableroPorId">
+    <div class="form-group">
+        <label asp-for="@Model.Id">Id Usuario Propietario</label>
+        <input asp-for="@Model.Id" class="form-control" />
+        <span asp-validation-for="@Model.Id" class="text-danger"></span>    
+    </div>
+    <button type="submit">Enviar</button>
+</form>
+
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

@@ -6,9 +6,9 @@ namespace tl2_tp10_2023_exequiel1984.Models
     {
         private readonly string _cadenaConexion;
 
-        public TableroRepository(string cadenaConexion)
+        public TableroRepository(string nadaQueVer)
         {
-            _cadenaConexion = cadenaConexion;
+            _cadenaConexion = nadaQueVer;
         }
 
         public Tablero Create(Tablero tablero)
@@ -49,7 +49,7 @@ namespace tl2_tp10_2023_exequiel1984.Models
 
         public Tablero GetById(int id)
         {
-            Tablero tablero = new Tablero();
+            Tablero tablero = null;
             using (SQLiteConnection connection = new SQLiteConnection(_cadenaConexion))
             {
                 string queryString = @"SELECT * FROM Tablero WHERE id = @id;";
@@ -58,8 +58,10 @@ namespace tl2_tp10_2023_exequiel1984.Models
                 connection.Open();
                 using (SQLiteDataReader reader = command.ExecuteReader())
                 {
-                    while (reader.Read())
+
+                    if (reader.Read())
                     {
+                        tablero = new Tablero();
                         tablero.Id = Convert.ToInt32(reader["id"]);
                         tablero.IdUsuarioPropietario = Convert.ToInt32(reader["id_usuario_propietario"]);
                         tablero.Nombre = reader["nombre"].ToString();

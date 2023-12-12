@@ -44,8 +44,16 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGFibGVyb1xFZGl0YXIuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
+[d:/tl2-2023/tl2-tp10-2023-exequiel1984/Views/Tablero/GetTableroById.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGFibGVyb1xHZXRUYWJsZXJvQnlJZC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
 [d:/tl2-2023/tl2-tp10-2023-exequiel1984/Views/Tablero/index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGFibGVyb1xpbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[d:/tl2-2023/tl2-tp10-2023-exequiel1984/Views/Tablero/TableroPorId.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGFibGVyb1xUYWJsZXJvUG9ySWQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
 [d:/tl2-2023/tl2-tp10-2023-exequiel1984/Views/Tarea/Crear.cshtml]

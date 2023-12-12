@@ -4,7 +4,7 @@ using tl2_tp10_2023_exequiel1984.Models;
 
 namespace tl2_tp10_2023_exequiel1984.Controllers;
 
-public class TareaController : NuevoController
+public class TareaController : GestorTableroKanbanController
 {
     private readonly ILogger<TareaController> _logger;
     private readonly ITareaRepository _tareaRepository;
@@ -142,7 +142,7 @@ public class TareaController : NuevoController
         }
     }
 
-    //Soy POST ?
+    [HttpGet]
     public IActionResult Eliminar(int id)
     {  
         if (!IsLoged()) return RedirectToRoute(new { Controller = "Login", action = "Index" });

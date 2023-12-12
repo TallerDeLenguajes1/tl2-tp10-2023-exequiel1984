@@ -1,0 +1,28 @@
+@using tl2_tp10_2023_exequiel1984.ViewModels;
+@model TableroPorIdViewModel
+
+<h1>TABLEROS POR ID</h1>
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Id</th>
+      <th scope="col">Id Usuario Propietario</th>
+      <th scope="col">Nombre</th>
+      <th scope="col">Descripcion</th>
+      <th scope="col">Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+        <tr>
+            <td>@Model.Id</td>
+            <td>@Model.IdUsuarioPropietario</td>
+            <td>@Model.Nombre</td>
+            <td>@Model.Descripcion</td>
+            <td>
+                    <a asp-controller="Tablero" asp-action="Editar" asp-route-id="@Model.Id">Editar</a>
+                    <a asp-controller="Tablero" asp-action="Eliminar" asp-route-id="@Model.Id" onclick="return confirm('¿Estas seguro que quieres eliminar el elemento?')">Eliminar</a>                      
+                    <a asp-controller="Tarea" asp-action="ListarTareasPorIdTablero" asp-route-idTablero="@Model.Id">Listar Tareas</a>
+            </td>
+        </tr>
+  </tbody>
+</table>

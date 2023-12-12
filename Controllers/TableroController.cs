@@ -6,7 +6,7 @@ using tl2_tp10_2023_exequiel1984.ViewModels;
 
 namespace tl2_tp10_2023_exequiel1984.Controllers;
 
-public class TableroController : NuevoController
+public class TableroController : GestorTableroKanbanController
 {
     private readonly ILogger<TableroController> _logger;
     private readonly ITableroRepository _tableroRepository;
@@ -24,21 +24,21 @@ public class TableroController : NuevoController
         
         if (!IsLoged()) return RedirectToRoute(new { Controller = "Login", action = "Index" });
         try
-        {    
+        {   
+            //Hacer switch con GetRol
+            
             if (IsAdmin()) 
             {
                 List<Tablero> tableros = _tableroRepository.GetAll(); 
                 return View(tableros);
             }
-            else
+            else if (IsOperador())
             {
-                if (IsOperador()) 
-                {
-                    List<Tablero> tableros = _tableroRepository.GetAllByIdUsuario(HttpContext.Session.GetInt32("id").Value);
-                    return View(tableros);
-                } else  
-                    return RedirectToRoute(new { Controller = "Login", action = "Index" });
-            }
+                List<Tablero> tableros = _tableroRepository.GetAllByIdUsuario(HttpContext.Session.GetInt32("id").Value);
+                return View(tableros);
+            } else  
+                return RedirectToRoute(new { Controller = "Login", action = "Index" });
+            
         }
         catch(Exception ex)
         {
@@ -83,6 +83,39 @@ public class TableroController : NuevoController
     }
 
     [HttpGet]
+    public IActionResult GetTableroById()
+    {
+        if (!IsLoged()) return RedirectToRoute(new { Controller = "Login", action = "Index" });
+        try
+        {    
+            return View(new GetTableroByIdViewModel());
+        }
+        catch(Exception ex)
+        {
+            _logger.LogError(ex.ToString());
+            return BadRequest();
+        }
+    }
+
+    [HttpPost]
+    public IActionResult TableroPorId(GetTableroByIdViewModel tableroVM)
+    {
+        if (!IsLoged()) return RedirectToRoute(new { Controller = "Login", action = "Index" });
+        if(!ModelState.IsValid) return RedirectToRoute(new{Controller = "Login", action = "Index"});
+        try
+        {    
+            Tablero tablero = _tableroRepository.GetById(tableroVM.Id);
+            TableroPorIdViewModel tableroPorIdVM = new TableroPorIdViewModel(tablero);
+            return View(tableroPorIdVM);
+        }
+        catch(Exception ex)
+        {
+            _logger.LogError(ex.ToString());
+            return BadRequest();
+        }
+    }
+
+    [HttpGet]
     public IActionResult Editar(int id)
     {  
         if (!IsLoged()) return RedirectToRoute(new { Controller = "Login", action = "Index" });
@@ -98,7 +131,6 @@ public class TableroController : NuevoController
             return BadRequest();
         }
     }
-
 
     [HttpPost]
     public IActionResult Editar(EditarTableroViewModel tableroVM)
@@ -119,7 +151,7 @@ public class TableroController : NuevoController
         }
     }
 
-    //SOY POST ?
+    [HttpGet]//porque viene de link, si viene de form por submit es POST
     public IActionResult Eliminar(int id)
     {  
         if (!IsLoged()) return RedirectToRoute(new { Controller = "Login", action = "Index" });

@@ -5,7 +5,7 @@ using tl2_tp10_2023_exequiel1984.ViewModels;
 
 namespace tl2_tp10_2023_exequiel1984.Controllers;
 
-public class UsuarioController : NuevoController
+public class UsuarioController : GestorTableroKanbanController
 {
     private readonly ILogger<UsuarioController> _logger;
     private readonly IUsuarioRepository _usuarioRepository;
@@ -23,8 +23,8 @@ public class UsuarioController : NuevoController
         {
             if (IsAdmin())
             {
-                IndexUsuarioViewModel usuarios = new IndexUsuarioViewModel(_usuarioRepository.GetAll()) ;
-                return View(usuarios);
+                IndexUsuarioViewModel usuariosVM = new IndexUsuarioViewModel(_usuarioRepository.GetAll()) ;
+                return View(usuariosVM);
             } else
             {
                 if (IsOperador())
@@ -117,7 +117,7 @@ public class UsuarioController : NuevoController
         }
     }
 
-    //Soy Post?
+    [HttpGet]
     public IActionResult Eliminar(int id)
     {  
         if (!IsLoged()) return RedirectToRoute(new { Controller = "Login", action = "Index" });

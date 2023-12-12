@@ -46,9 +46,12 @@ namespace tl2_tp10_2023_exequiel1984.Models
             
         public List<Usuario> GetAll()
         {
-            var queryString = @"SELECT * FROM Usuario;";
+            SQLiteConnection connection = null;
+            try
+            {
+                var queryString = @"SELECT * FROM Usuario;";
             List<Usuario> usuarios = new List<Usuario>();
-            using (SQLiteConnection connection = new SQLiteConnection(_cadenaConexion))
+            using (connection = new SQLiteConnection(_cadenaConexion))
             {
                 SQLiteCommand command = new SQLiteCommand(queryString, connection);
                 connection.Open();
@@ -68,6 +71,17 @@ namespace tl2_tp10_2023_exequiel1984.Models
                 connection.Close();
             }
                 return usuarios;
+            }
+            catch (System.Exception ex)
+            {
+                
+                throw;
+            }finally
+            {
+                if (connection == null)
+                    connection.Close();
+            }
+            
 
         }
         
