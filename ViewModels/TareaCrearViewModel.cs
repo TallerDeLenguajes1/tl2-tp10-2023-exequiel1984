@@ -1,17 +1,9 @@
-using tl2_tp10_2023_exequiel1984.ViewModels;
+using System.ComponentModel.DataAnnotations;
+using tl2_tp10_2023_exequiel1984.Models;
 
-namespace tl2_tp10_2023_exequiel1984.Models
+namespace tl2_tp10_2023_exequiel1984.ViewModels
 {
-    public enum EstadoTarea
-    {
-        Ideas,
-        ToDo,
-        Doing,
-        Review,
-        Done    
-    }
-
-    public class Tarea
+    public class TareaCrearViewModel
     {
         private int id;
         private int idTablero;
@@ -23,24 +15,28 @@ namespace tl2_tp10_2023_exequiel1984.Models
 
         public int Id { get => id; set => id = value; }
         public int IdTablero { get => idTablero; set => idTablero = value; }
+        
+
+        [Required(ErrorMessage = "Este campo es requerido.")]
+        [Display(Name = "Nombre")] 
         public string Nombre { get => nombre; set => nombre = value; }
+        
+        [Required(ErrorMessage = "Este campo es requerido.")]
+        [Display(Name = "Estado")] 
         public EstadoTarea Estado { get => estado; set => estado = value; }
+
+        [Required(ErrorMessage = "Este campo es requerido.")]
+        [Display(Name = "Descripcion")] 
         public string Descripcion { get => descripcion; set => descripcion = value; }
+        
+        [Required(ErrorMessage = "Este campo es requerido.")]
+        [Display(Name = "Color")]
         public string Color { get => color; set => color = value; }
+        
         public int IdUsuarioAsignado { get => idUsuarioAsignado; set => idUsuarioAsignado = value; }
 
-        public Tarea(){
+        public TareaCrearViewModel(){
             
-        }
-
-        public Tarea(TareaCrearViewModel tareaVM){
-            Id = tareaVM.Id;
-            IdTablero = tareaVM.IdTablero;
-            Nombre = tareaVM.Nombre;
-            Estado = tareaVM.Estado;
-            Descripcion = tareaVM.Descripcion;
-            Color = tareaVM.Color;
-            IdUsuarioAsignado = tareaVM.IdUsuarioAsignado;
         }
     }
 }

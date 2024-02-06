@@ -21,7 +21,6 @@ public class TableroController : GestorTableroKanbanController
 
     public IActionResult Index()
     {
-        
         if (!IsLoged()) return RedirectToRoute(new { Controller = "Login", action = "Index" });
         try
         {   
@@ -29,13 +28,21 @@ public class TableroController : GestorTableroKanbanController
             
             if (IsAdmin()) 
             {
-                List<Tablero> tableros = _tableroRepository.GetAll(); 
-                return View(tableros);
+                TableroIndexViewModel tablerosVM = new TableroIndexViewModel(_tableroRepository.GetAll()); 
+                foreach (var tablero in tablerosVM.TablerosViewModel)
+                {
+                    tablero.NombreUsuarioPropietario = _usuarioRepository.GetNameById(tablero.IdUsuarioPropietario);
+                }
+                return View(tablerosVM);
             }
             else if (IsOperador())
             {
-                List<Tablero> tableros = _tableroRepository.GetAllByIdUsuario(HttpContext.Session.GetInt32("id").Value);
-                return View(tableros);
+                TableroIndexViewModel tablerosVM = new TableroIndexViewModel(_tableroRepository.GetAllByIdUsuario(HttpContext.Session.GetInt32("id").Value));
+                foreach (var tablero in tablerosVM.TablerosViewModel)
+                {
+                    tablero.NombreUsuarioPropietario = _usuarioRepository.GetNameById(tablero.IdUsuarioPropietario);
+                }
+                return View(tablerosVM);
             } else  
                 return RedirectToRoute(new { Controller = "Login", action = "Index" });
             
@@ -48,7 +55,8 @@ public class TableroController : GestorTableroKanbanController
     }
 
     [HttpGet]
-    public IActionResult Crear()
+    [Route("Tablero/Crear")]
+    public IActionResult CrearTablero()
     {
         if (!IsLoged()) return RedirectToRoute(new { Controller = "Login", action = "Index" });
         try
@@ -64,7 +72,7 @@ public class TableroController : GestorTableroKanbanController
     }
 
     [HttpPost]
-    public IActionResult Crear(CrearTableroViewModel tableroVM)
+    public IActionResult CrearTablero(CrearTableroViewModel tableroVM)
     {   
         if (!IsLoged()) return RedirectToRoute(new { Controller = "Login", action = "Index" });
         if(!ModelState.IsValid) return RedirectToRoute(new{Controller = "Login", action = "Index"});
@@ -122,7 +130,8 @@ public class TableroController : GestorTableroKanbanController
         try
         {
             Tablero tablero = _tableroRepository.GetById(id);
-            EditarTableroViewModel tableroVM = new EditarTableroViewModel(tablero);
+            TableroEditarViewModel tableroVM = new TableroEditarViewModel(tablero);
+            tableroVM.Usuarios = _usuarioRepository.GetAll();
             return View(tableroVM);
         }
         catch (Exception ex)
@@ -133,7 +142,7 @@ public class TableroController : GestorTableroKanbanController
     }
 
     [HttpPost]
-    public IActionResult Editar(EditarTableroViewModel tableroVM)
+    public IActionResult Editar(TableroEditarViewModel tableroVM)
     {   
         if (!IsLoged()) return RedirectToRoute(new { Controller = "Login", action = "Index" });
         if(!ModelState.IsValid) return RedirectToRoute(new{Controller = "Login", action = "Index"});

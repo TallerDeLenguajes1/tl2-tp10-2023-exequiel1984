@@ -6,7 +6,7 @@ using tl2_tp10_2023_exequiel1984.ViewModels;
 
 namespace tl2_tp10_2023_exequiel1984.Controllers;
 
-public class LoginController : Controller
+public class LoginController : GestorTableroKanbanController
 {
     private readonly ILogger<LoginController> _logger;
     private readonly IUsuarioRepository _usuarioRepository;
@@ -43,7 +43,7 @@ public class LoginController : Controller
         }
         catch (System.Exception ex)
         {
-            _logger.LogError(ex.ToString());
+            _logger.LogError($"Error al intentar logear usuario {ex.ToString()}");
             return BadRequest();
         }
     }

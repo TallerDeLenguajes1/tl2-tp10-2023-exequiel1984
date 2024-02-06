@@ -6,9 +6,9 @@ namespace tl2_tp10_2023_exequiel1984.Models
     {
         private readonly string _cadenaConexion;
 
-        public TableroRepository(string nadaQueVer)
+        public TableroRepository(string CadenaConexion)
         {
-            _cadenaConexion = nadaQueVer;
+            _cadenaConexion = CadenaConexion;
         }
 
         public Tablero Create(Tablero tablero)

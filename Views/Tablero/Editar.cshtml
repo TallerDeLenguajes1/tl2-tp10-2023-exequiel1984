@@ -1,12 +1,12 @@
 @using tl2_tp10_2023_exequiel1984.ViewModels;
-@model EditarTableroViewModel
+@model TableroEditarViewModel
 
 <h1>EDITAR TABLERO</h1>
 <form asp-controller="Tablero" asp-action="Editar">
     <input hidden asp-for="@Model.Id">
     <div class="form-group">
-        <label asp-for="@Model.IdUsuarioPropietario">Id Usuario Propietario</label>
-        <input asp-for="@Model.IdUsuarioPropietario" class="form-control" />
+        <label asp-for="@Model.IdUsuarioPropietario">Usuario Propietario</label>
+        <select asp-for="@Model.IdUsuarioPropietario" asp-items="@(new SelectList(Model.Usuarios, "Id", "NombreDeUsuario"))" class="form-select" aria-label="Default select example[1]"></select>
         <span asp-validation-for="@Model.IdUsuarioPropietario" class="text-danger"></span>    
     </div>
     <div class="form-group">

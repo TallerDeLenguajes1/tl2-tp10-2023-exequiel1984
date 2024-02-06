@@ -20,5 +20,9 @@ namespace tl2_tp10_2023_exequiel1984.ViewModels
             this.Contrasenia = usuario.Contrasenia;
             this.Rol = usuario.Rol;
         }
+
+        public UsuarioEditarViewModel(){
+            
+        }
     }
 }

@@ -23,7 +23,7 @@ public class UsuarioController : GestorTableroKanbanController
         {
             if (IsAdmin())
             {
-                IndexUsuarioViewModel usuariosVM = new IndexUsuarioViewModel(_usuarioRepository.GetAll()) ;
+                UsuarioIndexViewModel usuariosVM = new UsuarioIndexViewModel(_usuarioRepository.GetAll()) ;
                 return View(usuariosVM);
             } else
             {
@@ -33,7 +33,7 @@ public class UsuarioController : GestorTableroKanbanController
                     Usuario usuario = _usuarioRepository.GetById(idUsuario);
                     List<Usuario> ListaUsuarios = new List<Usuario>();
                     ListaUsuarios.Add(usuario);
-                    IndexUsuarioViewModel usuarios = new IndexUsuarioViewModel(ListaUsuarios) ;
+                    UsuarioIndexViewModel usuarios = new UsuarioIndexViewModel(ListaUsuarios) ;
                     return View(usuarios);
                 } else
                     return RedirectToRoute(new { Controller = "Login", action = "Index" });
@@ -71,7 +71,7 @@ public class UsuarioController : GestorTableroKanbanController
         
         try
         {
-            Usuario usuario = new Usuario (usuarioVM);
+            Usuario usuario = new Usuario(usuarioVM);
             _usuarioRepository.Create(usuario);
             return RedirectToAction("Index");
         }

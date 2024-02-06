@@ -8,6 +8,7 @@ namespace tl2_tp10_2023_exequiel1984.Models
         public void Update(Usuario usuario);
         public List<Usuario> GetAll();
         public Usuario GetById(int id);
+        public string GetNameById(int id);
         public Usuario GetUsuarioLogin(string nombre, string contrasenia);
         public void Remove(int id);
     }

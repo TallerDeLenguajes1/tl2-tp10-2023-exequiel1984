@@ -50,26 +50,26 @@ namespace tl2_tp10_2023_exequiel1984.Models
             try
             {
                 var queryString = @"SELECT * FROM Usuario;";
-            List<Usuario> usuarios = new List<Usuario>();
-            using (connection = new SQLiteConnection(_cadenaConexion))
-            {
-                SQLiteCommand command = new SQLiteCommand(queryString, connection);
-                connection.Open();
-            
-                using(SQLiteDataReader reader = command.ExecuteReader())
+                List<Usuario> usuarios = new List<Usuario>();
+                using (connection = new SQLiteConnection(_cadenaConexion))
                 {
-                    while (reader.Read())
+                    SQLiteCommand command = new SQLiteCommand(queryString, connection);
+                    connection.Open();
+                
+                    using(SQLiteDataReader reader = command.ExecuteReader())
                     {
-                        var usuario = new Usuario();
-                        usuario.Id = Convert.ToInt32(reader["id"]);
-                        usuario.NombreDeUsuario = reader["nombre_de_usuario"].ToString();
-                        usuario.Contrasenia = reader["contrasenia"].ToString();
-                        usuario.Rol = (NivelDeAcceso) Convert.ToInt32(reader["rol"]);
-                        usuarios.Add(usuario);
+                        while (reader.Read())
+                        {
+                            var usuario = new Usuario();
+                            usuario.Id = Convert.ToInt32(reader["id"]);
+                            usuario.NombreDeUsuario = reader["nombre_de_usuario"].ToString();
+                            usuario.Contrasenia = reader["contrasenia"].ToString();
+                            usuario.Rol = (NivelDeAcceso) Convert.ToInt32(reader["rol"]);
+                            usuarios.Add(usuario);
+                        }
                     }
+                    connection.Close();
                 }
-                connection.Close();
-            }
                 return usuarios;
             }
             catch (System.Exception ex)
@@ -109,6 +109,30 @@ namespace tl2_tp10_2023_exequiel1984.Models
             return usuario;
         }
 
+        public string GetNameById(int id)
+        {
+            Usuario usuario = new Usuario();
+            using (SQLiteConnection connection = new SQLiteConnection(_cadenaConexion))
+            {
+                string queryString = @"SELECT * FROM Usuario WHERE id = @idUsuario;";
+                var command = new SQLiteCommand(queryString, connection);
+                command.Parameters.Add(new SQLiteParameter("@idUsuario", id));
+                connection.Open();
+                using (SQLiteDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        usuario.Id = Convert.ToInt32(reader["id"]);
+                        usuario.NombreDeUsuario = reader["nombre_de_usuario"].ToString();
+                        usuario.Contrasenia = reader["contrasenia"].ToString();
+                        usuario.Rol = (NivelDeAcceso) Convert.ToInt32(reader["rol"]);
+                    }
+                }
+                connection.Close();
+            }
+            return usuario.NombreDeUsuario;
+        }
+
         public Usuario GetUsuarioLogin(string nombre, string contrasenia)
         {
             Usuario usuario = new Usuario();
@@ -118,6 +142,7 @@ namespace tl2_tp10_2023_exequiel1984.Models
                 var command = new SQLiteCommand(queryString, connection);
                 command.Parameters.Add(new SQLiteParameter("@nombre", nombre));
                 command.Parameters.Add(new SQLiteParameter("@contrasenia", contrasenia));
+                
                 connection.Open();
                 using (SQLiteDataReader reader = command.ExecuteReader())
                 {

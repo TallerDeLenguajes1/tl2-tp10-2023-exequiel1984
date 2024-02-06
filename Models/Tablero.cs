@@ -27,7 +27,7 @@ namespace tl2_tp10_2023_exequiel1984.Models
             Descripcion = tableroVM.Descripcion;
         }
 
-        public Tablero(EditarTableroViewModel tableroVM)
+        public Tablero(TableroEditarViewModel tableroVM)
         {
             this.Id = tableroVM.Id;
             this.IdUsuarioPropietario = tableroVM.IdUsuarioPropietario;

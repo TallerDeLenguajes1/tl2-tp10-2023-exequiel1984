@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using tl2_tp10_2023_exequiel1984.Models;
+using tl2_tp10_2023_exequiel1984.ViewModels;
 
 namespace tl2_tp10_2023_exequiel1984.Controllers;
 
@@ -78,12 +79,12 @@ public class TareaController : GestorTableroKanbanController
     }
 
     [HttpGet]
-    public IActionResult Crear()
+    public IActionResult TareaCrear()
     {   
         if (!IsLoged()) return RedirectToRoute(new { Controller = "Login", action = "Index" });
         try
         {
-            return View(new Tarea());
+            return View(new TareaCrearViewModel());
         }
         catch(Exception ex)
         {
@@ -93,12 +94,13 @@ public class TareaController : GestorTableroKanbanController
     }
 
     [HttpPost]
-    public IActionResult Crear(Tarea tarea)
+    public IActionResult TareaCrear(TareaCrearViewModel tareaVM)
     {   
         if (!IsLoged()) return RedirectToRoute(new { Controller = "Login", action = "Index" });
         if(!ModelState.IsValid) return RedirectToRoute(new{Controller = "Login", action = "Index"});
         try
         {
+            Tarea tarea = new Tarea(tareaVM);
             _tareaRepository.Create(tarea);
             return RedirectToAction("Index");
         }

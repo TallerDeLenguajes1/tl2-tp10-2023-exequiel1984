@@ -2,7 +2,7 @@ using tl2_tp10_2023_exequiel1984.Models;
 
 namespace tl2_tp10_2023_exequiel1984.ViewModels
 {
-    public class ElementoIndexUsuarioViewModel
+    public class UsuarioElementoIndexViewModel
     {
         private int id;
         private string nombreDeUsuario;
