@@ -27,6 +27,28 @@ namespace tl2_tp10_2023_exequiel1984.Models
             return tarea;
         }
 
+        public void UpDate(Tarea tarea)
+        {
+            using (SQLiteConnection connection = new SQLiteConnection(cadenaConexion))
+            {
+                var queryString = @"
+                UPDATE Tarea SET id_tablero = @idTablero, nombre = @nombre, estado = @estado, descripcion = @descripcion, 
+                color = @color, id_usuario_asignado = @idUsuarioAsignado
+                WHERE id = @idTarea;";
+                connection.Open();
+                var command = new SQLiteCommand(queryString, connection);
+                command.Parameters.Add(new SQLiteParameter("@idTablero", tarea.IdTablero));
+                command.Parameters.Add(new SQLiteParameter("@nombre", tarea.Nombre));
+                command.Parameters.Add(new SQLiteParameter("@estado", tarea.Estado));
+                command.Parameters.Add(new SQLiteParameter("@descripcion", tarea.Descripcion));
+                command.Parameters.Add(new SQLiteParameter("@color", tarea.Color));
+                command.Parameters.Add(new SQLiteParameter("@idUsuarioAsignado", tarea.IdUsuarioAsignado));
+                command.Parameters.Add(new SQLiteParameter("@idTarea", tarea.Id));
+                command.ExecuteNonQuery();
+                connection.Close();
+            }
+        }
+
         public void UpDateNombre(int id, string Nombre){
             using (SQLiteConnection connection = new SQLiteConnection(cadenaConexion))
             {

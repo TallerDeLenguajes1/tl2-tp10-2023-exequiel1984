@@ -9,12 +9,15 @@ public class TareaController : GestorTableroKanbanController
 {
     private readonly ILogger<TareaController> _logger;
     private readonly ITareaRepository _tareaRepository;
+    private readonly ITableroRepository _tableroRepository;
+    private readonly IUsuarioRepository _usuarioRepository;
 
-    public TareaController(ILogger<TareaController> logger, ITareaRepository tareaRepository)
+    public TareaController(ILogger<TareaController> logger, ITareaRepository tareaRepository, ITableroRepository tableroRepository, IUsuarioRepository usuarioRepository)
     {
         _logger = logger;
         _tareaRepository = tareaRepository;
-
+        _tableroRepository = tableroRepository;
+        _usuarioRepository = usuarioRepository;
     }
 
     public IActionResult Index()
@@ -84,7 +87,9 @@ public class TareaController : GestorTableroKanbanController
         if (!IsLoged()) return RedirectToRoute(new { Controller = "Login", action = "Index" });
         try
         {
-            return View(new TareaCrearViewModel());
+            List<Tablero> listaTableros = _tableroRepository.GetAll();
+            List<Usuario> listaUsuarios = _usuarioRepository.GetAll();
+            return View(new TareaCrearViewModel(listaTableros, listaUsuarios));
         }
         catch(Exception ex)
         {
@@ -118,7 +123,10 @@ public class TareaController : GestorTableroKanbanController
         try
         {
             Tarea tarea = _tareaRepository.GetById(id);
-            return View(tarea);
+            TareaEditarViewModel tareaVM = new TareaEditarViewModel(tarea);
+            tareaVM.Tableros = _tableroRepository.GetAll();
+            tareaVM.Usuarios = _usuarioRepository.GetAll();
+            return View(tareaVM);
         }
         catch(Exception ex)
         {
@@ -134,7 +142,7 @@ public class TareaController : GestorTableroKanbanController
         if(!ModelState.IsValid) return RedirectToRoute(new{Controller = "Login", action = "Index"});
         try
         {
-            _tareaRepository.UpDateNombre(tarea.Id, tarea.Nombre);
+            _tareaRepository.UpDate(tarea);
             return RedirectToAction("Index");
         }
         catch(Exception ex)

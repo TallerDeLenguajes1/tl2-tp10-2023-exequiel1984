@@ -3,7 +3,7 @@ using tl2_tp10_2023_exequiel1984.Models;
 
 namespace tl2_tp10_2023_exequiel1984.ViewModels
 {
-    public class TareaCrearViewModel
+    public class TareaEditarViewModel
     {
         private int id;
         private int idTablero;
@@ -17,9 +17,9 @@ namespace tl2_tp10_2023_exequiel1984.ViewModels
         List<Usuario> usuarios;
 
         public int Id { get => id; set => id = value; }
+        
         [Display(Name = "Tablero")] 
         public int IdTablero { get => idTablero; set => idTablero = value; }
-        
 
         [Required(ErrorMessage = "Este campo es requerido.")]
         [Display(Name = "Nombre")] 
@@ -37,20 +37,24 @@ namespace tl2_tp10_2023_exequiel1984.ViewModels
         [Display(Name = "Color")]
         public string Color { get => color; set => color = value; }
         
-        [Required(ErrorMessage = "Este campo es requerido.")]
-        [Display(Name = "Usuario asignado")]
+        [Display(Name = "Usuario")]
         public int IdUsuarioAsignado { get => idUsuarioAsignado; set => idUsuarioAsignado = value; }
         public List<Tablero> Tableros { get => tableros; set => tableros = value; }
         public List<Usuario> Usuarios { get => usuarios; set => usuarios = value; }
 
-        public TareaCrearViewModel()
-        {
+        public TareaEditarViewModel(){
             
         }
 
-        public TareaCrearViewModel(List<Tablero> listaTableros, List<Usuario> listaUsuarios){
-            Tableros = listaTableros;
-            Usuarios = listaUsuarios;
+        public TareaEditarViewModel(Tarea tarea)
+        {
+            Id = tarea.Id;
+            IdTablero = tarea.IdTablero;
+            Nombre = tarea.Nombre;
+            Estado = tarea.Estado;
+            Descripcion = tarea.Descripcion;
+            Color = tarea.Color;
+            IdUsuarioAsignado = tarea.IdUsuarioAsignado;
         }
     }
 }
