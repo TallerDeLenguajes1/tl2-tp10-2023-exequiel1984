@@ -27,8 +27,9 @@ public class TareaController : GestorTableroKanbanController
         {
             if (IsAdmin())
             {
-                List<Tarea> tareas = _tareaRepository.GetAll();
-                return View(tareas);
+                TareaIndexViewModel tareasVM = new TareaIndexViewModel(_tareaRepository.GetAll(), _tableroRepository.GetAll(), 
+                    _usuarioRepository.GetAll());
+                return View(tareasVM);
             } else
             {
                 if (IsOperador())

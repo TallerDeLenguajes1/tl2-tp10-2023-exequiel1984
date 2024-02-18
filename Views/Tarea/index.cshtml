@@ -1,46 +1,29 @@
-@* @{
-    ViewData["Title"] = "Home Page";
-}
+@using tl2_tp10_2023_exequiel1984.ViewModels;
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div> *@
-
-@* <form asp-controller="Tarea" asp-action="ListarTareasPorIdTablero">
-  <div class="form-group">
-    <label for="IdTablero">Id Tablero</label>
-    <input type="number" for="IdTablero" class="form-control">
-  </div>
-  <button type="submit" class="btn btn-primary">Submit</button>
-</form> *@
-
-@model List<Tarea>
+@model TareaIndexViewModel
 <h1>LISTA TAREAS</h1>
 <table class="table">
   <thead>
     <tr>
-      <th scope="col">Id</th>
-      <th scope="col">Id Tablero</th>
       <th scope="col">Nombre</th>
       <th scope="col">Estado</th>
       <th scope="col">Descripcion</th>
       <th scope="col">Color</th>
-      <th scope="col">Id Usuario Asignado</th>
+      <th scope="col">Tablero al que pertenece</th>
+      <th scope="col">Usuario Asignado</th>
       <th scope="col">Acciones</th>
     </tr>
   </thead>
   <tbody>
-    @foreach (var tarea in Model)
+    @foreach (var tarea in Model.TareasViewModel)
     {
         <tr>
-            <td>@tarea.Id</td>
-            <td>@tarea.IdTablero</td>
             <td>@tarea.Nombre</td>
             <td>@tarea.Estado</td>
             <td>@tarea.Descripcion</td>
             <td>@tarea.Color</td>
-            <td>@tarea.IdUsuarioAsignado</td>
+            <td>@tarea.NombreTablero</td>
+            <td>@tarea.NombreUsuarioAsignado</td>
             <td>
                     <a asp-controller="Tarea" asp-action="Editar" asp-route-id="@tarea.Id">Editar</a>
                     <a asp-controller="Tarea" asp-action="Eliminar" asp-route-id="@tarea.Id" onclick="return confirm('¿Estas seguro que quieres eliminar el elemento?')">Eliminar</a>                      
