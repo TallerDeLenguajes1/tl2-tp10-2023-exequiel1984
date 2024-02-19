@@ -20,7 +20,7 @@ namespace tl2_tp10_2023_exequiel1984.Models
             
         }
 
-        public Tablero(CrearTableroViewModel tableroVM)
+        public Tablero(TableroCrearViewModel tableroVM)
         {
             IdUsuarioPropietario = tableroVM.IdUsuarioPropietario;
             Nombre = tableroVM.Nombre;

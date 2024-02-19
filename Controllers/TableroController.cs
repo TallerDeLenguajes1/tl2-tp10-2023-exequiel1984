@@ -55,14 +55,14 @@ public class TableroController : GestorTableroKanbanController
     }
 
     [HttpGet]
-    [Route("Tablero/Crear")]
-    public IActionResult CrearTablero()
+    //[Route("Tablero/Crear")]
+    public IActionResult Crear()
     {
         if (!IsLoged()) return RedirectToRoute(new { Controller = "Login", action = "Index" });
         try
         {    
             List<Usuario> usuarios = _usuarioRepository.GetAll();
-            return View(new CrearTableroViewModel(usuarios));
+            return View(new TableroCrearViewModel(usuarios));
         }
         catch(Exception ex)
         {
@@ -72,7 +72,7 @@ public class TableroController : GestorTableroKanbanController
     }
 
     [HttpPost]
-    public IActionResult CrearTablero(CrearTableroViewModel tableroVM)
+    public IActionResult Crear(TableroCrearViewModel tableroVM)
     {   
         if (!IsLoged()) return RedirectToRoute(new { Controller = "Login", action = "Index" });
         if(!ModelState.IsValid) return RedirectToRoute(new{Controller = "Login", action = "Index"});

@@ -3,7 +3,7 @@ using tl2_tp10_2023_exequiel1984.Models;
 
 namespace tl2_tp10_2023_exequiel1984.ViewModels
 {
-    public class CrearTableroViewModel
+    public class TableroCrearViewModel
     { 
         private List<Usuario> usuarios;
         private int idUsuarioPropietario;
@@ -25,10 +25,12 @@ namespace tl2_tp10_2023_exequiel1984.ViewModels
         
         public List<Usuario> Usuarios { get => usuarios; set => usuarios = value; }
 
-        public CrearTableroViewModel(List<Usuario> ListaUsuarios){
+        public TableroCrearViewModel(List<Usuario> ListaUsuarios){
             Usuarios = ListaUsuarios;
-        }
-        public CrearTableroViewModel(){
+        } 
+
+        public TableroCrearViewModel(){
+            
         }
     }
 }
