@@ -197,6 +197,30 @@ namespace tl2_tp10_2023_exequiel1984.Models
             return tareas;
         }
 
+        public List<int> GetListIdTableroByIdUsuario(int idUsuario)
+        {
+            string query = @"SELECT id_tablero FROM Tarea WHERE id_usuario_asignado = @idUsuario;";
+            List<int> listadoIdTableros = new List<int>();
+            using (SQLiteConnection connection = new SQLiteConnection(cadenaConexion))
+            {
+                SQLiteCommand command = new SQLiteCommand(query, connection);
+                command.Parameters.Add(new SQLiteParameter("@idUsuario", idUsuario));
+                connection.Open();
+
+                using (SQLiteDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        int idTablero = Convert.ToInt32(reader["id_tablero"]);
+                        listadoIdTableros.Add(idTablero);
+                    }
+                }
+
+                connection.Close();
+            }
+            return listadoIdTableros;
+        }
+
         public void Remove(int id)
         {
             using (SQLiteConnection connection = new SQLiteConnection(cadenaConexion))
@@ -225,28 +249,5 @@ namespace tl2_tp10_2023_exequiel1984.Models
                 connection.Close();
             }
         }
-
-        /* public int CantidadTareasByEstado(EstadoTarea estado)
-        {
-            string query = @"SELECT count(*) as cantidad FROM Tarea WHERE estado = @estado;";
-            int cantidad;
-            using (SQLiteConnection connection = new SQLiteConnection(cadenaConexion))
-            {
-                SQLiteCommand command = new SQLiteCommand(query, connection);
-                command.Parameters.Add(new SQLiteParameter("@estado", estado));
-                connection.Open();
-
-                using (SQLiteDataReader reader = command.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        cantidad = Convert.ToInt32(reader["cantidad"]);
-                    }
-                }
-
-                connection.Close();
-            }
-            return cantidad;
-        } */
     }
 }

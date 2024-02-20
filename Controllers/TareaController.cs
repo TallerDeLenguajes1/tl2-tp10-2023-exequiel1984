@@ -34,11 +34,10 @@ public class TareaController : GestorTableroKanbanController
             {
                 if (IsOperador())
                 {
-                    int idUsuario = Convert.ToInt32(HttpContext.Session.GetString("id"));
-                    Tarea tarea = _tareaRepository.GetById(idUsuario);
-                    List<Tarea> tareas = new List<Tarea>();
-                    tareas.Add(tarea);
-                    return View(tareas);
+                    int idUsuario = HttpContext.Session.GetInt32("id").Value;
+                    TareaIndexViewModel tareasVM = new TareaIndexViewModel(_tareaRepository.GetAllByIdUsuario(idUsuario),
+                        _tableroRepository.GetAll(), _usuarioRepository.GetAll());
+                    return View(tareasVM);
                 } else
                     return RedirectToRoute(new { Controller = "Login", action = "Index" });
             }
@@ -56,8 +55,10 @@ public class TareaController : GestorTableroKanbanController
         if (!IsLoged()) return RedirectToRoute(new { Controller = "Login", action = "Index" });
         try
         {
-            List<Tarea> tareas = _tareaRepository.GetAllByIdTablero(idTablero);
-            return View(tareas);
+            TareaIndexViewModel tareasVM = new TareaIndexViewModel(_tareaRepository.GetAllByIdTablero(idTablero),
+                _tableroRepository.GetAll(), _usuarioRepository.GetAll()); 
+
+            return View(tareasVM);
         }
         catch(Exception ex)
         {

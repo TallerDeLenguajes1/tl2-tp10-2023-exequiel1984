@@ -30,6 +30,7 @@ public class LoginController : GestorTableroKanbanController
             if(!ModelState.IsValid) return RedirectToRoute(new{Controller = "Login", action = "Index"});
 
             Usuario usuarioLogueado = _usuarioRepository.GetUsuarioLogin(loginUsuario.Nombre, loginUsuario.Contrasenia);
+            
             if (!string.IsNullOrEmpty(usuarioLogueado.NombreDeUsuario))
             {
                 _logger.LogInformation("El usuario logueado " + usuarioLogueado.NombreDeUsuario + " ingreso correctamente");

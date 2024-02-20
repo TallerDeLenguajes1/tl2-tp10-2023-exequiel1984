@@ -11,12 +11,14 @@ public class TableroController : GestorTableroKanbanController
     private readonly ILogger<TableroController> _logger;
     private readonly ITableroRepository _tableroRepository;
     private readonly IUsuarioRepository _usuarioRepository;
+    private readonly ITareaRepository _tareaRepository;
 
-    public TableroController(ILogger<TableroController> logger, ITableroRepository tableroRepository, IUsuarioRepository usuarioRepository)
+    public TableroController(ILogger<TableroController> logger, ITableroRepository tableroRepository, IUsuarioRepository usuarioRepository, ITareaRepository tareaRepository)
     {
         _logger = logger;
         _tableroRepository = tableroRepository;
         _usuarioRepository = usuarioRepository;
+        _tareaRepository = tareaRepository;
     }
 
     public IActionResult Index()
@@ -37,7 +39,18 @@ public class TableroController : GestorTableroKanbanController
             }
             else if (IsOperador())
             {
+                List<int> listaIdTableros = new List<int>();
                 TableroIndexViewModel tablerosVM = new TableroIndexViewModel(_tableroRepository.GetAllByIdUsuario(HttpContext.Session.GetInt32("id").Value));
+                listaIdTableros = _tareaRepository.GetListIdTableroByIdUsuario(HttpContext.Session.GetInt32("id").Value);
+                
+                foreach (var idTablero in listaIdTableros)
+                {
+                    Tablero tablero = new Tablero();
+                    tablero = _tableroRepository.GetById(idTablero);
+                    TableroElementoIndexViewModel tableroVM = new TableroElementoIndexViewModel(tablero);
+                    tablerosVM.TablerosViewModel.Add(tableroVM);
+                }
+
                 foreach (var tablero in tablerosVM.TablerosViewModel)
                 {
                     tablero.NombreUsuarioPropietario = _usuarioRepository.GetNameById(tablero.IdUsuarioPropietario);

@@ -10,8 +10,8 @@ namespace tl2_tp10_2023_exequiel1984.Models
         public List<Tarea> GetAll();
         public List<Tarea> GetAllByIdUsuario(int idUsuario);
         public List<Tarea> GetAllByIdTablero(int idTablero);
+        public List<int> GetListIdTableroByIdUsuario(int idUsuario);
         public void Remove(int id);
         public void AsignarUsuarioATarea(int idUsuario, int idTarea);
-        //public int CantidadTareasByEstado(EstadoTarea estado);
     }
 }
