@@ -67,7 +67,7 @@ public class UsuarioController : GestorTableroKanbanController
     {   
         if (!IsLoged()) return RedirectToRoute(new { Controller = "Login", action = "Index" });
         if (!IsAdmin()) return RedirectToRoute(new{Controller = "Login", action = "Index"}); 
-        if(!ModelState.IsValid) return RedirectToRoute(new{Controller = "Login", action = "Index"});
+        if(!ModelState.IsValid) return RedirectToRoute(new{Controller = "Usuario", action = "CrearUsuario"});
         
         try
         {
@@ -108,7 +108,7 @@ public class UsuarioController : GestorTableroKanbanController
     {  
         if (!IsLoged()) return RedirectToRoute(new { Controller = "Login", action = "Index" });
         if (!IsAdmin()) return RedirectToRoute(new{Controller = "Login", action = "Index"}); 
-        if(!ModelState.IsValid) return RedirectToRoute(new{Controller = "Login", action = "Index"});
+        if(!ModelState.IsValid) return RedirectToRoute(new{Controller = "Usuario", action = "Editar"});
         try
         {
             Usuario usuario = new Usuario(usuarioVM);
@@ -126,7 +126,7 @@ public class UsuarioController : GestorTableroKanbanController
     public IActionResult EditarPorOperador(UsuarioEditarOperadorViewModel usuarioVM)
     {  
         if (!IsLoged()) return RedirectToRoute(new { Controller = "Login", action = "Index" }); 
-        if(!ModelState.IsValid) return RedirectToRoute(new{Controller = "Login", action = "Index"});
+        if(!ModelState.IsValid) return RedirectToRoute(new{Controller = "Usuario", action = "Editar"});
         try
         {
             Usuario usuario = new Usuario(usuarioVM);
@@ -145,7 +145,7 @@ public class UsuarioController : GestorTableroKanbanController
     {  
         if (!IsLoged()) return RedirectToRoute(new { Controller = "Login", action = "Index" });
         if (!IsAdmin()) return RedirectToRoute(new{Controller = "Login", action = "Index"}); 
-        if(!ModelState.IsValid) return RedirectToRoute(new{Controller = "Login", action = "Index"});
+        if(!ModelState.IsValid) return RedirectToRoute(new{Controller = "Usuario", action = "Index"});
         try
         {
             _usuarioRepository.Remove(id);

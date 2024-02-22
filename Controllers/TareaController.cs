@@ -166,7 +166,7 @@ public class TareaController : GestorTableroKanbanController
     public IActionResult TareaCrear(TareaCrearViewModel tareaVM)
     {   
         if (!IsLoged()) return RedirectToRoute(new { Controller = "Login", action = "Index" });
-        if(!ModelState.IsValid) return RedirectToRoute(new{Controller = "Login", action = "Index"});
+        if(!ModelState.IsValid) return RedirectToRoute(new{Controller = "Tarea", action = "Crear"});
         try
         {
             Tarea tarea = new Tarea(tareaVM);
@@ -214,7 +214,7 @@ public class TareaController : GestorTableroKanbanController
     public IActionResult Editar(TareaEditarViewModel tareaVM)
     {   
         if (!IsLoged()) return RedirectToRoute(new { Controller = "Login", action = "Index" });
-        if(!ModelState.IsValid) return RedirectToRoute(new{Controller = "Login", action = "Index"});
+        if(!ModelState.IsValid) return RedirectToRoute(new{Controller = "Tarea", action = "Editar"});
         try
         {
             Tarea tarea = new Tarea(tareaVM);
@@ -232,7 +232,7 @@ public class TareaController : GestorTableroKanbanController
     public IActionResult EditarEstado(TareaEditarEstadoViewModel tareaVM)
     {   
         if (!IsLoged()) return RedirectToRoute(new { Controller = "Login", action = "Index" });
-        if(!ModelState.IsValid) return RedirectToRoute(new{Controller = "Tarea", action = "Index"});
+        if(!ModelState.IsValid) return RedirectToRoute(new{Controller = "Tarea", action = "Editar"});
         try
         {
             Tarea tarea = new Tarea(tareaVM);
@@ -250,7 +250,7 @@ public class TareaController : GestorTableroKanbanController
     public IActionResult Eliminar(int id)
     {  
         if (!IsLoged()) return RedirectToRoute(new { Controller = "Login", action = "Index" });
-        if(!ModelState.IsValid) return RedirectToRoute(new{Controller = "Login", action = "Index"});
+        if(!ModelState.IsValid) return RedirectToRoute(new{Controller = "Tarea", action = "Index"});
         try
         {    
             _tareaRepository.Remove(id);

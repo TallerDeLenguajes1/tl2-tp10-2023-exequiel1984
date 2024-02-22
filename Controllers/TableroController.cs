@@ -96,8 +96,8 @@ public class TableroController : GestorTableroKanbanController
     public IActionResult Crear(TableroCrearViewModel tableroVM)
     {   
         if (!IsLoged()) return RedirectToRoute(new { Controller = "Login", action = "Index" });
-        if(!ModelState.IsValid) return RedirectToRoute(new{Controller = "Login", action = "Index"});
-        if (!IsAdmin()) return RedirectToRoute(new{Controller = "Login", action = "Index"});    
+        if(!ModelState.IsValid) return RedirectToRoute(new{Controller = "Tablero", action = "Crear"});
+        if (!IsAdmin()) return RedirectToRoute(new{Controller = "Tablero", action = "Crear"});    
         try
         {    
             Tablero tablero = new Tablero(tableroVM);
@@ -129,7 +129,7 @@ public class TableroController : GestorTableroKanbanController
         } 
     }
 
-    [HttpGet]
+    /* [HttpGet]
     public IActionResult GetTableroById()
     {
         if (!IsLoged()) return RedirectToRoute(new { Controller = "Login", action = "Index" });
@@ -142,9 +142,9 @@ public class TableroController : GestorTableroKanbanController
             _logger.LogError(ex.ToString());
             return BadRequest();
         }
-    }
+    } */
 
-    [HttpPost]
+    /* [HttpPost]
     public IActionResult TableroPorId(GetTableroByIdViewModel tableroVM)
     {
         if (!IsLoged()) return RedirectToRoute(new { Controller = "Login", action = "Index" });
@@ -160,7 +160,7 @@ public class TableroController : GestorTableroKanbanController
             _logger.LogError(ex.ToString());
             return BadRequest();
         }
-    }
+    } */
 
     [HttpGet]
     public IActionResult Editar(int id)
@@ -184,8 +184,7 @@ public class TableroController : GestorTableroKanbanController
     public IActionResult Editar(TableroEditarViewModel tableroVM)
     {   
         if (!IsLoged()) return RedirectToRoute(new { Controller = "Login", action = "Index" });
-        if(!ModelState.IsValid) return RedirectToRoute(new{Controller = "Login", action = "Index"});
-            
+        if(!ModelState.IsValid) return RedirectToRoute(new{Controller = "Tablero", action = "Editar"});
         try
         {   
             Tablero tablero = new Tablero(tableroVM);
@@ -203,7 +202,7 @@ public class TableroController : GestorTableroKanbanController
     public IActionResult Eliminar(int id)
     {  
         if (!IsLoged()) return RedirectToRoute(new { Controller = "Login", action = "Index" });
-        if(!ModelState.IsValid) return RedirectToRoute(new{Controller = "Login", action = "Index"});
+        if(!ModelState.IsValid) return RedirectToRoute(new{Controller = "Tablero", action = "Index"});
         try
         {
             _tableroRepository.Remove(id);

@@ -3,6 +3,7 @@
 
 <form asp-controller="Usuario" asp-action="EditarPorOperador">
     <input hidden asp-for="@Model.Id">
+    <input hidden asp-for="@Model.Rol">
     <div class="form-group">
         <label asp-for="@Model.Nombre"></label>
         <input asp-for="@Model.Nombre" class="form-control" />
