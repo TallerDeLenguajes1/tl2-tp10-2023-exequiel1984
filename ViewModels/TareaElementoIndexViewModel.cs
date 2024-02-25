@@ -11,7 +11,7 @@ namespace tl2_tp10_2023_exequiel1984.ViewModels
         private EstadoTarea estado;
         private string descripcion;
         private string color;
-        private int idUsuarioAsignado;
+        private int? idUsuarioAsignado;
         private string nombreUsuarioAsignado;
         private string nombreUsuarioPropietario;
 
@@ -21,7 +21,7 @@ namespace tl2_tp10_2023_exequiel1984.ViewModels
         public EstadoTarea Estado { get => estado; set => estado = value; }
         public string Descripcion { get => descripcion; set => descripcion = value; }
         public string Color { get => color; set => color = value; }
-        public int IdUsuarioAsignado { get => idUsuarioAsignado; set => idUsuarioAsignado = value; }
+        public int? IdUsuarioAsignado { get => idUsuarioAsignado; set => idUsuarioAsignado = value; }
         public string NombreTablero { get => nombreTablero; set => nombreTablero = value; }
         public string NombreUsuarioAsignado { get => nombreUsuarioAsignado; set => nombreUsuarioAsignado = value; }
         public string NombreUsuarioPropietario { get => nombreUsuarioPropietario; set => nombreUsuarioPropietario = value; }

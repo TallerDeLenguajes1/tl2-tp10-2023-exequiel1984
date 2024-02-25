@@ -11,7 +11,7 @@ namespace tl2_tp10_2023_exequiel1984.ViewModels
         private EstadoTarea estado;
         private string descripcion;
         private string color;
-        private int idUsuarioAsignado;
+        private int? idUsuarioAsignado;
 
         List<Tablero> tableros;
         List<Usuario> usuarios;
@@ -38,7 +38,7 @@ namespace tl2_tp10_2023_exequiel1984.ViewModels
         public string Color { get => color; set => color = value; }
         
         [Display(Name = "Usuario Asignado")]
-        public int IdUsuarioAsignado { get => idUsuarioAsignado; set => idUsuarioAsignado = value; }
+        public int? IdUsuarioAsignado { get => idUsuarioAsignado; set => idUsuarioAsignado = value; }
         
         public List<Tablero> Tableros { get => tableros; set => tableros = value; }
         public List<Usuario> Usuarios { get => usuarios; set => usuarios = value; }

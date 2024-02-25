@@ -109,7 +109,7 @@ namespace tl2_tp10_2023_exequiel1984.Models
             return usuario;
         }
 
-        public string GetNameById(int id)
+        public string GetNameById(int? id)
         {
             Usuario usuario = new Usuario();
             using (SQLiteConnection connection = new SQLiteConnection(_cadenaConexion))

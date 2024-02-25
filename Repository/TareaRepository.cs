@@ -130,7 +130,8 @@ namespace tl2_tp10_2023_exequiel1984.Models
                         tarea.Estado = (EstadoTarea) Convert.ToInt32(reader["estado"]);
                         tarea.Descripcion = reader["descripcion"].ToString();
                         tarea.Color = reader["color"].ToString();
-                        tarea.IdUsuarioAsignado = Convert.ToInt32(reader["id_usuario_asignado"]);
+                        if (reader["id_usuario_asignado"] != DBNull.Value)
+                            tarea.IdUsuarioAsignado = Convert.ToInt32(reader["id_usuario_asignado"]);
                     }
                 }
                 connection.Close();
@@ -140,7 +141,7 @@ namespace tl2_tp10_2023_exequiel1984.Models
             return tarea;
         }
 
-        public List<Tarea> GetByIdUsuarioAsignado(int idUsuario)
+        public List<Tarea> GetByIdUsuarioAsignado(int? idUsuario)
         {
             string query = @"SELECT * FROM Tarea WHERE id_usuario_asignado = @idUsuario;";
             List<Tarea> tareas = new List<Tarea>();
@@ -161,7 +162,8 @@ namespace tl2_tp10_2023_exequiel1984.Models
                         tarea.Estado = (EstadoTarea) Convert.ToInt32(reader["estado"]);
                         tarea.Descripcion = reader["descripcion"].ToString();
                         tarea.Color = reader["color"].ToString();
-                        tarea.IdUsuarioAsignado = Convert.ToInt32(reader["id_usuario_asignado"]);
+                        if (reader["id_usuario_asignado"] != DBNull.Value)
+                            tarea.IdUsuarioAsignado = Convert.ToInt32(reader["id_usuario_asignado"]);
                         tareas.Add(tarea);
                     }
                 }
@@ -191,7 +193,8 @@ namespace tl2_tp10_2023_exequiel1984.Models
                         tarea.Estado = (EstadoTarea) Convert.ToInt32(reader["estado"]);
                         tarea.Descripcion = reader["descripcion"].ToString();
                         tarea.Color = reader["color"].ToString();
-                        tarea.IdUsuarioAsignado = Convert.ToInt32(reader["id_usuario_asignado"]);
+                        if (reader["id_usuario_asignado"] != DBNull.Value)
+                            tarea.IdUsuarioAsignado = Convert.ToInt32(reader["id_usuario_asignado"]);
                         tareas.Add(tarea);
                     }
                 }

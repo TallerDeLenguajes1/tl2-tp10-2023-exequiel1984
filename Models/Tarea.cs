@@ -19,7 +19,7 @@ namespace tl2_tp10_2023_exequiel1984.Models
         private EstadoTarea estado;
         private string descripcion;
         private string color;
-        private int idUsuarioAsignado;
+        private int? idUsuarioAsignado;
 
         public int Id { get => id; set => id = value; }
         public int IdTablero { get => idTablero; set => idTablero = value; }
@@ -27,7 +27,7 @@ namespace tl2_tp10_2023_exequiel1984.Models
         public EstadoTarea Estado { get => estado; set => estado = value; }
         public string Descripcion { get => descripcion; set => descripcion = value; }
         public string Color { get => color; set => color = value; }
-        public int IdUsuarioAsignado { get => idUsuarioAsignado; set => idUsuarioAsignado = value; }
+        public int? IdUsuarioAsignado { get => idUsuarioAsignado; set => idUsuarioAsignado = value; }
 
         public Tarea(){
             
