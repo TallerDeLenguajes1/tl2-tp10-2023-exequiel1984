@@ -96,9 +96,9 @@ namespace tl2_tp10_2023_exequiel1984.Models
                         tarea.Id = Convert.ToInt32(Reader["id"]);
                         tarea.IdTablero = Convert.ToInt32(Reader["id_tablero"]);
                         tarea.Nombre = Reader["nombre"].ToString();
+                        tarea.Estado = (EstadoTarea)Convert.ToInt32(Reader["estado"]);
                         tarea.Descripcion = Reader["descripcion"].ToString();
                         tarea.Color = Reader["color"].ToString();
-                        //DEVUELVE UN ERROR CUANDO LA tarea no tiene un IdUsuarioAsignado
                         if (Reader["id_usuario_asignado"] != DBNull.Value)
                             tarea.IdUsuarioAsignado = Convert.ToInt32(Reader["id_usuario_asignado"]);
                         tareas.Add(tarea);
@@ -112,8 +112,7 @@ namespace tl2_tp10_2023_exequiel1984.Models
 
         public Tarea GetById(int id)
         {
-            Tarea tarea = new Tarea();
-            tarea = null;
+            Tarea tarea = null;
             using (SQLiteConnection connection = new SQLiteConnection(cadenaConexion))
             {
                 string queryString = @"SELECT * FROM Tarea WHERE id = @idTarea;";
@@ -124,6 +123,7 @@ namespace tl2_tp10_2023_exequiel1984.Models
                 {
                     while (reader.Read())
                     {
+                        tarea = new Tarea();
                         tarea.Id = Convert.ToInt32(reader["id"]);
                         tarea.IdTablero = Convert.ToInt32(reader["id_tablero"]);
                         tarea.Nombre = reader["nombre"].ToString();
@@ -136,7 +136,7 @@ namespace tl2_tp10_2023_exequiel1984.Models
                 connection.Close();
             }
             if (tarea==null)
-                throw new Exception("Tarea no creada.");
+                throw new Exception("La tarea con el ID especificado no existe.");
             return tarea;
         }
 
