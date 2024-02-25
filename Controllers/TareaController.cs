@@ -172,7 +172,6 @@ public class TareaController : GestorTableroKanbanController
         {
             Tarea tarea = _tareaRepository.GetById(id);
 
-
             int idPropietarioTablero = _tableroRepository.GetIdUsuarioPropietarioById(tarea.IdTablero);
 
             //Controlar si es operador y tambien si la tarea NO es del operador, ademas verificar si esta asignada

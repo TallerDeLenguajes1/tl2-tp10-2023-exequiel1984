@@ -27,6 +27,13 @@ namespace tl2_tp10_2023_exequiel1984.Models
             Descripcion = tableroVM.Descripcion;
         }
 
+        public Tablero(TableroCrearPorOperadorViewModel tableroVM)
+        {
+            IdUsuarioPropietario = tableroVM.IdUsuarioPropietario;
+            Nombre = tableroVM.Nombre;
+            Descripcion = tableroVM.Descripcion;
+        }
+
         public Tablero(TableroEditarViewModel tableroVM)
         {
             this.Id = tableroVM.Id;
