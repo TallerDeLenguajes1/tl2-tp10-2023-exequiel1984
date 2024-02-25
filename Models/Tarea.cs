@@ -34,7 +34,6 @@ namespace tl2_tp10_2023_exequiel1984.Models
         }
 
         public Tarea(TareaCrearViewModel tareaVM){
-            Id = tareaVM.Id;
             IdTablero = tareaVM.IdTablero;
             Nombre = tareaVM.Nombre;
             Estado = tareaVM.Estado;

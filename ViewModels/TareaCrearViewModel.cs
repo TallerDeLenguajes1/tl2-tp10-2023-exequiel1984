@@ -5,7 +5,6 @@ namespace tl2_tp10_2023_exequiel1984.ViewModels
 {
     public class TareaCrearViewModel
     {
-        private int id;
         private int idTablero;
         private string nombre;
         private EstadoTarea estado;
@@ -16,7 +15,6 @@ namespace tl2_tp10_2023_exequiel1984.ViewModels
         List<Tablero> tableros;
         List<Usuario> usuarios;
 
-        public int Id { get => id; set => id = value; }
         [Display(Name = "Tablero")] 
         public int IdTablero { get => idTablero; set => idTablero = value; }
         
