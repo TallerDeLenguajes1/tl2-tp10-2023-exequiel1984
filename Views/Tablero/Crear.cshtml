@@ -4,11 +4,13 @@
 <h1>CREAR TABLERO</h1>
 <form asp-controller="Tablero" asp-action="Crear">
   <div class="form-group">
+
         <label asp-for="@Model.IdUsuarioPropietario"></label>
         <select asp-for="@Model.IdUsuarioPropietario" asp-items="@(new SelectList(Model.Usuarios, "Id", "NombreDeUsuario"))" class="form-select">
           <option value="">Seleccione el usuario propietario</option>
         </select>
-        <span asp-validation-for="@Model.IdUsuarioPropietario" class="text-danger"></span>    
+        <span asp-validation-for="@Model.IdUsuarioPropietario" class="text-danger"></span>  
+          
   </div>
   <div class="form-group">
     <label asp-for="@Model.Nombre"></label>

@@ -10,6 +10,7 @@
       <th scope="col">Descripcion</th>
       <th scope="col">Color</th>
       <th scope="col">Tablero al que pertenece</th>
+      <th scope="col">Usuario Propietario</th>
       <th scope="col">Usuario Asignado</th>
       <th scope="col">Acciones</th>
     </tr>
@@ -23,10 +24,13 @@
             <td>@tarea.Descripcion</td>
             <td>@tarea.Color</td>
             <td>@tarea.NombreTablero</td>
+            <td>@tarea.NombreUsuarioPropietario</td>
             <td>@tarea.NombreUsuarioAsignado</td>
             <td>
-                    <a asp-controller="Tarea" asp-action="Editar" asp-route-id="@tarea.Id">Editar</a>
-                    <a asp-controller="Tarea" asp-action="Eliminar" asp-route-id="@tarea.Id" onclick="return confirm('¿Estas seguro que quieres eliminar el elemento?')">Eliminar</a>                      
+              <a asp-controller="Tarea" asp-action="Editar" asp-route-id="@tarea.Id">Editar</a>
+              @if(tarea.tienePermisoDeEdicion){
+                <a asp-controller="Tarea" asp-action="Eliminar" asp-route-id="@tarea.Id" onclick="return confirm('¿Estas seguro que quieres eliminar el elemento?')">Eliminar</a>                      
+              }
             </td>
         </tr>
     }

@@ -21,51 +21,56 @@ public class TableroController : GestorTableroKanbanController
         _tareaRepository = tareaRepository;
     }
 
-    public IActionResult Index()
-    {
-        if (!IsLoged()) return RedirectToRoute(new { Controller = "Login", action = "Index" });
-        try
-        {   
-            //Hacer switch con GetRol
-            
-            if (IsAdmin()) 
-            {
-                TableroIndexViewModel tablerosVM = new TableroIndexViewModel(_tableroRepository.GetAll()); 
-                foreach (var tablero in tablerosVM.TablerosViewModel)
-                {
-                    tablero.NombreUsuarioPropietario = _usuarioRepository.GetNameById(tablero.IdUsuarioPropietario);
-                }
-                return View(tablerosVM);
-            }
-            else if (IsOperador())
-            {
-                List<int> listaIdTableros = new List<int>();
-                TableroIndexViewModel tablerosVM = new TableroIndexViewModel(_tableroRepository.GetAllByIdUsuario(HttpContext.Session.GetInt32("id").Value));
-                listaIdTableros = _tareaRepository.GetListIdTableroByIdUsuario(HttpContext.Session.GetInt32("id").Value);
-                
-                foreach (var idTablero in listaIdTableros)
-                {
-                    Tablero tablero = new Tablero();
-                    tablero = _tableroRepository.GetById(idTablero);
-                    TableroElementoIndexViewModel tableroVM = new TableroElementoIndexViewModel(tablero);
-                    tablerosVM.TablerosViewModel.Add(tableroVM);
-                }
-
-                foreach (var tablero in tablerosVM.TablerosViewModel)
-                {
-                    tablero.NombreUsuarioPropietario = _usuarioRepository.GetNameById(tablero.IdUsuarioPropietario);
-                }
-                return View(tablerosVM);
-            } else  
-                return RedirectToRoute(new { Controller = "Login", action = "Index" });
-            
-        }
-        catch(Exception ex)
+        public IActionResult Index()
         {
-            _logger.LogError(ex.ToString());
-            return BadRequest();
+            if (!IsLoged()) return RedirectToRoute(new { Controller = "Login", action = "Index" });
+            try
+            {   
+                //Hacer switch con GetRol
+                
+                if (IsAdmin()) 
+                {
+                    TableroIndexViewModel tablerosVM = new TableroIndexViewModel(_tableroRepository.GetAll()); 
+                    foreach (var tablero in tablerosVM.TablerosViewModel)
+                    {
+                        tablero.NombreUsuarioPropietario = _usuarioRepository.GetNameById(tablero.IdUsuarioPropietario);
+                        tablero.tienePermisoDeEdicion = true;
+                    }
+                    return View(tablerosVM);
+                }
+                else if (IsOperador())
+                {
+                    TableroIndexViewModel tablerosVM = new TableroIndexViewModel(_tableroRepository.GetByIdUsuarioPropietario(HttpContext.Session.GetInt32("id").Value));
+                    foreach (var tablero in tablerosVM.TablerosViewModel)
+                        tablero.tienePermisoDeEdicion = true;
+                    
+                    List<int> listaIdTablerosAsignados = new List<int>();
+                    listaIdTablerosAsignados = _tareaRepository.GetListIdTableroByIdUsuario(HttpContext.Session.GetInt32("id").Value);
+                    foreach (var idTablero in listaIdTablerosAsignados)
+                    {
+                        if (tablerosVM.TablerosViewModel.Any(t => t.Id == idTablero))
+                            continue;
+    
+                        Tablero tablero = new Tablero();
+                        tablero = _tableroRepository.GetById(idTablero);
+                        TableroElementoIndexViewModel tableroVM = new TableroElementoIndexViewModel(tablero);
+                        tablerosVM.TablerosViewModel.Add(tableroVM);
+                    }
+
+                    foreach (var tablero in tablerosVM.TablerosViewModel)
+                        tablero.NombreUsuarioPropietario = _usuarioRepository.GetNameById(tablero.IdUsuarioPropietario);
+                    
+                    return View(tablerosVM);
+                } else  
+                    return RedirectToRoute(new { Controller = "Login", action = "Index" });
+                
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError(ex.ToString());
+                return BadRequest();
+            }
         }
-    }
 
     [HttpGet]
     //[Route("Tablero/Crear")]

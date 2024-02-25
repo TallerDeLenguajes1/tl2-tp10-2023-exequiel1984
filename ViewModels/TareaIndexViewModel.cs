@@ -7,7 +7,10 @@ namespace tl2_tp10_2023_exequiel1984.ViewModels
         private List<TareaElementoIndexViewModel> tareasViewModel;
         public List<TareaElementoIndexViewModel> TareasViewModel { get => tareasViewModel; set => tareasViewModel = value; }
 
-        public TareaIndexViewModel(List<Tarea> tareas, List<Tablero> tableros, List<Usuario> usuarios)
+        private string nombrePropietarioTablero;
+        public string NombrePropietarioTablero { get => nombrePropietarioTablero; set => nombrePropietarioTablero = value; }
+
+        public TareaIndexViewModel(List<Tarea> tareas)
         {
             TareasViewModel = new List<TareaElementoIndexViewModel>();
             foreach (var tarea in tareas)
@@ -22,21 +25,6 @@ namespace tl2_tp10_2023_exequiel1984.ViewModels
                     Color = tarea.Color,
                     IdUsuarioAsignado = tarea.IdUsuarioAsignado
                 });
-            }
-
-            foreach (var tareaVM in TareasViewModel)
-            {
-                foreach (var tablero in tableros)
-                {
-                    if(tareaVM.IdTablero == tablero.Id)
-                        tareaVM.NombreTablero = tablero.Nombre;
-                }
-
-                foreach (var usuario in usuarios)
-                {
-                    if(tareaVM.IdUsuarioAsignado == usuario.Id)
-                        tareaVM.NombreUsuarioAsignado = usuario.NombreDeUsuario;
-                }
             }
         }
     }

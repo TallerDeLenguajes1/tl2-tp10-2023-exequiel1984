@@ -98,7 +98,9 @@ namespace tl2_tp10_2023_exequiel1984.Models
                         tarea.Nombre = Reader["nombre"].ToString();
                         tarea.Descripcion = Reader["descripcion"].ToString();
                         tarea.Color = Reader["color"].ToString();
-                        tarea.IdUsuarioAsignado = Convert.ToInt32(Reader["id_usuario_asignado"]);
+                        //DEVUELVE UN ERROR CUANDO LA tarea no tiene un IdUsuarioAsignado
+                        if (Reader["id_usuario_asignado"] != DBNull.Value)
+                            tarea.IdUsuarioAsignado = Convert.ToInt32(Reader["id_usuario_asignado"]);
                         tareas.Add(tarea);
                     }
                 }
@@ -111,6 +113,7 @@ namespace tl2_tp10_2023_exequiel1984.Models
         public Tarea GetById(int id)
         {
             Tarea tarea = new Tarea();
+            tarea = null;
             using (SQLiteConnection connection = new SQLiteConnection(cadenaConexion))
             {
                 string queryString = @"SELECT * FROM Tarea WHERE id = @idTarea;";
@@ -132,10 +135,12 @@ namespace tl2_tp10_2023_exequiel1984.Models
                 }
                 connection.Close();
             }
+            if (tarea==null)
+                throw new Exception("Tarea no creada.");
             return tarea;
         }
 
-        public List<Tarea> GetAllByIdUsuario(int idUsuario)
+        public List<Tarea> GetByIdUsuarioAsignado(int idUsuario)
         {
             string query = @"SELECT * FROM Tarea WHERE id_usuario_asignado = @idUsuario;";
             List<Tarea> tareas = new List<Tarea>();
@@ -160,7 +165,6 @@ namespace tl2_tp10_2023_exequiel1984.Models
                         tareas.Add(tarea);
                     }
                 }
-
                 connection.Close();
             }
             return tareas;

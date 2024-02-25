@@ -74,6 +74,49 @@ namespace tl2_tp10_2023_exequiel1984.Models
                 throw new Exception("Tablero no creado");
             return tablero;
         }
+
+        public string GetNameById(int idTablero)
+        {
+            string nombre = null;
+            using (SQLiteConnection connection = new SQLiteConnection(_cadenaConexion))
+            {
+                string queryString = @"SELECT nombre FROM Tablero WHERE id = @idTablero;";
+                var command = new SQLiteCommand(queryString, connection);
+                command.Parameters.Add(new SQLiteParameter("@idTablero", idTablero));
+                connection.Open();
+                using (SQLiteDataReader reader = command.ExecuteReader())
+                {
+                    if (reader.Read())
+                        nombre = reader["nombre"].ToString();
+                    
+                }
+                connection.Close();
+            }
+            if (nombre == null)
+                throw new Exception("Tablero no creado");
+            return nombre;
+        }
+
+        public int GetIdUsuarioPropietarioById(int idTablero)
+        {
+            int idUsuarioPropietario = -1;
+            using (SQLiteConnection connection = new SQLiteConnection(_cadenaConexion))
+            {
+                string queryString = @"SELECT id_usuario_propietario FROM Tablero WHERE id = @idTablero;";
+                var command = new SQLiteCommand(queryString, connection);
+                command.Parameters.Add(new SQLiteParameter("@idTablero", idTablero));
+                connection.Open();
+                using (SQLiteDataReader reader = command.ExecuteReader())
+                {
+                    if (reader.Read())
+                        idUsuarioPropietario = Convert.ToInt32(reader["id_usuario_propietario"]); 
+                }
+                connection.Close();
+            }
+            if (idUsuarioPropietario==-1)
+                throw new Exception("Tablero no creado.");
+            return idUsuarioPropietario;
+        }
         
         public List<Tablero> GetAll()
         {
@@ -102,7 +145,7 @@ namespace tl2_tp10_2023_exequiel1984.Models
             return tableros;
         }
 
-        public List<Tablero> GetAllByIdUsuario(int idUsuario)
+        public List<Tablero> GetByIdUsuarioPropietario(int idUsuario)
         {
             string query = @"SELECT * FROM Tablero WHERE id_usuario_propietario = @idUsuario;";
             List<Tablero> tableros = new List<Tablero>();
@@ -124,16 +167,44 @@ namespace tl2_tp10_2023_exequiel1984.Models
                         tableros.Add(tablero);
                     }
                 }
-
                 connection.Close();
             }
             return tableros;
         }
 
+        public List<int> GetListIdByUsuarioPropietario(int idUsuarioPropietario)
+        {
+            List<int> listaIdTablero = new List<int>();
+            using (SQLiteConnection connection = new SQLiteConnection(_cadenaConexion))
+            {
+                string queryString = @"SELECT id FROM Tablero WHERE id_usuario_propietario = @idUsuarioPropietario;";
+                var command = new SQLiteCommand(queryString, connection);
+                command.Parameters.Add(new SQLiteParameter("@idUsuarioPropietario", idUsuarioPropietario));
+                connection.Open();
+                using (SQLiteDataReader reader = command.ExecuteReader())
+                {
+
+                    if (reader.Read())
+                    {
+                        int id = Convert.ToInt32(reader["id"]);
+                        listaIdTablero.Add(id);
+                    }
+                }
+                connection.Close();
+            }
+            return listaIdTablero;
+        }
+
+        
+
         public void Remove(int id)
         {
             using (SQLiteConnection connection = new SQLiteConnection(_cadenaConexion))
             {
+                //delete from tareas inner join tablero on tarea.idtablero = tablero.id where tablero.id = id
+
+
+                
                 string query = @"DELETE FROM Tablero WHERE id = @id;";
                 connection.Open();
                 SQLiteCommand command = new SQLiteCommand(query, connection);

@@ -20,11 +20,12 @@
             <td>@tablero.Descripcion</td>
             <td>@tablero.NombreUsuarioPropietario</td>
             <td>
-              @if(ViewContext.HttpContext.Session.GetString("rol") == NivelDeAcceso.administrador.ToString()){
+              @if(tablero.tienePermisoDeEdicion){
                 <a asp-controller="Tablero" asp-action="Editar" asp-route-id="@tablero.Id">Editar</a>
-                <a asp-controller="Tablero" asp-action="Eliminar" asp-route-id="@tablero.Id" onclick="return confirm('¿Estas seguro que quieres eliminar el elemento?')">Eliminar</a>                      
-              }
-                <a asp-controller="Tarea" asp-action="ListarTareasPorIdTablero" asp-route-idTablero="@tablero.Id">Listar Tareas</a>
+                <a asp-controller="Tablero" asp-action="Eliminar" asp-route-id="@tablero.Id" onclick="return confirm('¿Estas seguro que quieres eliminar el elemento?')">Eliminar</a>
+              }                         
+                <a asp-controller="Tarea" asp-action="ListarTareasPorIdTablero" asp-route-idTablero="@tablero.Id" asp-route-nombrePropietarioTablero="@tablero.NombreUsuarioPropietario"
+                asp-route-idPropietarioTablero="@tablero.IdUsuarioPropietario">Listar Tareas</a>
             </td>
         </tr>
     }

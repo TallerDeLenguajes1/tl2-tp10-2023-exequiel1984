@@ -27,16 +27,48 @@ public class TareaController : GestorTableroKanbanController
         {
             if (IsAdmin())
             {
-                TareaIndexViewModel tareasVM = new TareaIndexViewModel(_tareaRepository.GetAll(), _tableroRepository.GetAll(), 
-                    _usuarioRepository.GetAll());
+                TareaIndexViewModel tareasVM = new TareaIndexViewModel(_tareaRepository.GetAll());
+                foreach (var tarea in tareasVM.TareasViewModel)
+                {
+                    tarea.NombreTablero = _tableroRepository.GetNameById(tarea.IdTablero);
+                    tarea.NombreUsuarioAsignado = _usuarioRepository.GetNameById(tarea.IdUsuarioAsignado);
+                    int idUsuarioPropietario = _tableroRepository.GetIdUsuarioPropietarioById(tarea.IdTablero);
+                    tarea.NombreUsuarioPropietario = _usuarioRepository.GetNameById(idUsuarioPropietario);
+                    tarea.tienePermisoDeEdicion = true;
+                }
                 return View(tareasVM);
             } else
             {
                 if (IsOperador())
                 {
-                    int idUsuario = HttpContext.Session.GetInt32("id").Value;
-                    TareaIndexViewModel tareasVM = new TareaIndexViewModel(_tareaRepository.GetAllByIdUsuario(idUsuario),
-                        _tableroRepository.GetAll(), _usuarioRepository.GetAll());
+                    int idUsuarioLogueado = HttpContext.Session.GetInt32("id").Value;
+                    
+                    TareaIndexViewModel tareasVM = new TareaIndexViewModel(_tareaRepository.GetByIdUsuarioAsignado(idUsuarioLogueado));
+                    foreach (var tarea in tareasVM.TareasViewModel)
+                    {
+                        tarea.NombreTablero = _tableroRepository.GetNameById(tarea.IdTablero);
+                        tarea.NombreUsuarioAsignado = _usuarioRepository.GetNameById(tarea.IdUsuarioAsignado);
+                        int idUsuarioPropietario = _tableroRepository.GetIdUsuarioPropietarioById(tarea.IdTablero);
+                        tarea.NombreUsuarioPropietario = _usuarioRepository.GetNameById(idUsuarioPropietario);
+                    }
+
+                    List<int> listaIdTableroPropietario = _tableroRepository.GetListIdByUsuarioPropietario(idUsuarioLogueado);
+                    foreach (var idTablero in listaIdTableroPropietario)
+                    {
+                        List<Tarea> tareasPropias = _tareaRepository.GetAllByIdTablero(idTablero);
+                        foreach (var tarea in tareasPropias)
+                        {
+                            TareaElementoIndexViewModel tareaVM = new TareaElementoIndexViewModel(tarea);
+                            tareaVM.NombreTablero = _tableroRepository.GetNameById(tarea.IdTablero);
+                            tareaVM.NombreUsuarioAsignado = _usuarioRepository.GetNameById(tarea.IdUsuarioAsignado);
+                            int idUsuarioPropietario = _tableroRepository.GetIdUsuarioPropietarioById(tarea.IdTablero);
+                            tareaVM.NombreUsuarioPropietario = _usuarioRepository.GetNameById(idUsuarioPropietario);
+                            tareaVM.tienePermisoDeEdicion = true;
+                            
+                            tareasVM.TareasViewModel.Add(tareaVM);
+                        }
+                    }
+                    
                     return View(tareasVM);
                 } else
                     return RedirectToRoute(new { Controller = "Login", action = "Index" });
@@ -50,13 +82,26 @@ public class TareaController : GestorTableroKanbanController
     }
 
     [HttpGet]
-    public IActionResult ListarTareasPorIdTablero(int idTablero)
+    public IActionResult ListarTareasPorIdTablero(int idTablero, string nombrePropietarioTablero, int idPropietarioTablero)
     {
         if (!IsLoged()) return RedirectToRoute(new { Controller = "Login", action = "Index" });
         try
         {
-            TareaIndexViewModel tareasVM = new TareaIndexViewModel(_tareaRepository.GetAllByIdTablero(idTablero),
-                _tableroRepository.GetAll(), _usuarioRepository.GetAll()); 
+            TareaIndexViewModel tareasVM = new TareaIndexViewModel(_tareaRepository.GetAllByIdTablero(idTablero));
+            foreach (var tarea in tareasVM.TareasViewModel)
+            {
+                tarea.NombreTablero = _tableroRepository.GetNameById(tarea.IdTablero);
+                tarea.NombreUsuarioAsignado = _usuarioRepository.GetNameById(tarea.IdUsuarioAsignado);
+                int idUsuarioPropietario = _tableroRepository.GetIdUsuarioPropietarioById(tarea.IdTablero);
+                tarea.NombreUsuarioPropietario = _usuarioRepository.GetNameById(idUsuarioPropietario);
+            }
+            tareasVM.NombrePropietarioTablero = nombrePropietarioTablero;
+
+            if (IsAdmin() || idPropietarioTablero == HttpContext.Session.GetInt32("id").Value)
+            {
+                foreach (var tarea in tareasVM.TareasViewModel)
+                    tarea.tienePermisoDeEdicion = true;
+            }
 
             return View(tareasVM);
         }
@@ -73,7 +118,7 @@ public class TareaController : GestorTableroKanbanController
         if (!IsLoged()) return RedirectToRoute(new { Controller = "Login", action = "Index" });
         try
         {
-            List<Tarea> tareas = _tareaRepository.GetAllByIdUsuario(idUsuario);
+            List<Tarea> tareas = _tareaRepository.GetByIdUsuarioAsignado(idUsuario);
             return View(tareas);
         }
         catch(Exception ex)
@@ -126,6 +171,12 @@ public class TareaController : GestorTableroKanbanController
         {
             Tarea tarea = _tareaRepository.GetById(id);
             TareaEditarViewModel tareaVM = new TareaEditarViewModel(tarea);
+
+            //Controlar si es operador y tambien si la tarea NO es del operador, ademas verificar si esta asignada
+            //Si no es mia y tampoco la tengo asignada (es un error) enviar a un badrequest
+            if(IsOperador())
+                return View("EditarOperador", tareaVM);
+
             tareaVM.Tableros = _tableroRepository.GetAll();
             tareaVM.Usuarios = _usuarioRepository.GetAll();
             return View(tareaVM);
@@ -138,13 +189,32 @@ public class TareaController : GestorTableroKanbanController
     }
 
     [HttpPost]
-    public IActionResult Editar(Tarea tarea)
+    public IActionResult Editar(TareaEditarViewModel tareaVM)
     {   
         if (!IsLoged()) return RedirectToRoute(new { Controller = "Login", action = "Index" });
         if(!ModelState.IsValid) return RedirectToRoute(new{Controller = "Login", action = "Index"});
         try
         {
+            Tarea tarea = new Tarea(tareaVM);
             _tareaRepository.UpDate(tarea);
+            return RedirectToAction("Index");
+        }
+        catch(Exception ex)
+        {
+            _logger.LogError(ex.ToString());
+            return BadRequest();
+        }
+    }
+
+    [HttpPost]
+    public IActionResult EditarOperador(TareaEditarViewModel tareaVM)
+    {   
+        if (!IsLoged()) return RedirectToRoute(new { Controller = "Login", action = "Index" });
+        if(!ModelState.IsValid) return RedirectToRoute(new{Controller = "Login", action = "Index"});
+        try
+        {
+            Tarea tarea = new Tarea(tareaVM);
+            _tareaRepository.UpDateEstado(tarea.Id, tarea.Estado);
             return RedirectToAction("Index");
         }
         catch(Exception ex)

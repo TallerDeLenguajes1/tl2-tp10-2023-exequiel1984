@@ -7,6 +7,7 @@ namespace tl2_tp10_2023_exequiel1984.ViewModels
         private List<TableroElementoIndexViewModel> tablerosViewModel;
         public List<TableroElementoIndexViewModel> TablerosViewModel { get => tablerosViewModel; set => tablerosViewModel = value; }
 
+
         public TableroIndexViewModel(List<Tablero> tableros)
         {
             TablerosViewModel = new List<TableroElementoIndexViewModel>();
