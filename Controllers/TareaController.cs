@@ -66,6 +66,7 @@ public class TareaController : GestorTableroKanbanController
                             tareaVM.tienePermisoDeEdicion = true;
                             
                             tareasVM.TareasViewModel.Add(tareaVM);
+                            
                         }
                     }
                     
