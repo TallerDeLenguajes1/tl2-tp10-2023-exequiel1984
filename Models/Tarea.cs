@@ -52,5 +52,12 @@ namespace tl2_tp10_2023_exequiel1984.Models
             Color = tareaVM.Color;
             IdUsuarioAsignado = tareaVM.IdUsuarioAsignado;
         }
+
+        public Tarea(TareaEditarEstadoViewModel tareaVM){
+            Id = tareaVM.Id;
+            
+            Estado = tareaVM.Estado;
+            
+        }
     }
 }

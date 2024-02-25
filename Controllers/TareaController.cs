@@ -113,7 +113,7 @@ public class TareaController : GestorTableroKanbanController
         } 
     }
 
-    [HttpGet]
+    /* [HttpGet]
     public IActionResult ListarTareasPorIdUsuario(int idUsuario)
     {
         if (!IsLoged()) return RedirectToRoute(new { Controller = "Login", action = "Index" });
@@ -127,7 +127,7 @@ public class TareaController : GestorTableroKanbanController
             _logger.LogError(ex.ToString());
             return BadRequest();
         } 
-    }
+    } */
 
     [HttpGet]
     public IActionResult TareaCrear()
@@ -171,13 +171,19 @@ public class TareaController : GestorTableroKanbanController
         try
         {
             Tarea tarea = _tareaRepository.GetById(id);
-            TareaEditarViewModel tareaVM = new TareaEditarViewModel(tarea);
+
+
+            int idPropietarioTablero = _tableroRepository.GetIdUsuarioPropietarioById(tarea.IdTablero);
 
             //Controlar si es operador y tambien si la tarea NO es del operador, ademas verificar si esta asignada
             //Si no es mia y tampoco la tengo asignada (es un error) enviar a un badrequest
-            if(IsOperador())
-                return View("EditarOperador", tareaVM);
+            if(!IsAdmin() && idPropietarioTablero != HttpContext.Session.GetInt32("id").Value)
+            {
+                TareaEditarEstadoViewModel tareaEstadoVM = new TareaEditarEstadoViewModel(tarea); 
+                return View("EditarEstado", tareaEstadoVM);
+            }
 
+            TareaEditarViewModel tareaVM = new TareaEditarViewModel(tarea);
             tareaVM.Tableros = _tableroRepository.GetAll();
             tareaVM.Usuarios = _usuarioRepository.GetAll();
             return View(tareaVM);
@@ -208,10 +214,10 @@ public class TareaController : GestorTableroKanbanController
     }
 
     [HttpPost]
-    public IActionResult EditarOperador(TareaEditarViewModel tareaVM)
+    public IActionResult EditarEstado(TareaEditarEstadoViewModel tareaVM)
     {   
         if (!IsLoged()) return RedirectToRoute(new { Controller = "Login", action = "Index" });
-        if(!ModelState.IsValid) return RedirectToRoute(new{Controller = "Login", action = "Index"});
+        if(!ModelState.IsValid) return RedirectToRoute(new{Controller = "Tarea", action = "Index"});
         try
         {
             Tarea tarea = new Tarea(tareaVM);

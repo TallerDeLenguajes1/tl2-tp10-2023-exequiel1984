@@ -39,6 +39,7 @@ namespace tl2_tp10_2023_exequiel1984.ViewModels
         
         [Display(Name = "Usuario Asignado")]
         public int IdUsuarioAsignado { get => idUsuarioAsignado; set => idUsuarioAsignado = value; }
+        
         public List<Tablero> Tableros { get => tableros; set => tableros = value; }
         public List<Usuario> Usuarios { get => usuarios; set => usuarios = value; }
 
