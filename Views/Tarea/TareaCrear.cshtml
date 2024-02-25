@@ -3,7 +3,7 @@
 @model TareaCrearViewModel
 
 <form asp-controller="Tarea" asp-action="TareaCrear">
-    <legend>CREAR TAREA</legend>
+  <legend>CREAR TAREA</legend>
   <div class="form-group">
     <label asp-for="@Model.IdTablero"></label>
     <select asp-for="@Model.IdTablero" asp-items="@(new SelectList(Model.Tableros, "Id", "Nombre"))" class="form-select">

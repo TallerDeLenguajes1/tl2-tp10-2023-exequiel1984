@@ -135,7 +135,13 @@ public class TareaController : GestorTableroKanbanController
         if (!IsLoged()) return RedirectToRoute(new { Controller = "Login", action = "Index" });
         try
         {
-            List<Tablero> listaTableros = _tableroRepository.GetAll();
+            List<Tablero> listaTableros = new List<Tablero>();
+            
+            if (IsAdmin())
+                listaTableros = _tableroRepository.GetAll();
+            else if (IsOperador())
+                listaTableros = _tableroRepository.GetByIdUsuarioPropietario(HttpContext.Session.GetInt32("id").Value);
+            
             List<Usuario> listaUsuarios = _usuarioRepository.GetAll();
             return View(new TareaCrearViewModel(listaTableros, listaUsuarios));
         }
