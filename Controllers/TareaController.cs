@@ -35,6 +35,7 @@ public class TareaController : GestorTableroKanbanController
                     int idUsuarioPropietario = _tableroRepository.GetIdUsuarioPropietarioById(tarea.IdTablero);
                     tarea.NombreUsuarioPropietario = _usuarioRepository.GetNameById(idUsuarioPropietario);
                     tarea.tienePermisoDeEdicion = true;
+                    tarea.tienePermisoDeEliminar = true;
                 }
                 return View(tareasVM);
             } else
@@ -64,7 +65,7 @@ public class TareaController : GestorTableroKanbanController
                             int idUsuarioPropietario = _tableroRepository.GetIdUsuarioPropietarioById(tarea.IdTablero);
                             tareaVM.NombreUsuarioPropietario = _usuarioRepository.GetNameById(idUsuarioPropietario);
                             tareaVM.tienePermisoDeEdicion = true;
-                            
+                            tareaVM.tienePermisoDeEliminar = true;
                             tareasVM.TareasViewModel.Add(tareaVM);
                             
                         }
@@ -100,8 +101,17 @@ public class TareaController : GestorTableroKanbanController
 
             if (IsAdmin() || idPropietarioTablero == HttpContext.Session.GetInt32("id").Value)
             {
-                foreach (var tarea in tareasVM.TareasViewModel)
+                foreach (var tarea in tareasVM.TareasViewModel){
                     tarea.tienePermisoDeEdicion = true;
+                    tarea.tienePermisoDeEliminar = true;
+                }
+            } else
+            {
+                foreach (var tarea in tareasVM.TareasViewModel)
+                {
+                    if(tarea.IdUsuarioAsignado == HttpContext.Session.GetInt32("id").Value)
+                        tarea.tienePermisoDeEdicion = true;
+                }
             }
 
             return View(tareasVM);

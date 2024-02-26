@@ -27,6 +27,7 @@ namespace tl2_tp10_2023_exequiel1984.ViewModels
         public string NombreUsuarioPropietario { get => nombreUsuarioPropietario; set => nombreUsuarioPropietario = value; }
 
         public bool tienePermisoDeEdicion;
+        public bool tienePermisoDeEliminar;
 
         public TareaElementoIndexViewModel(){
             

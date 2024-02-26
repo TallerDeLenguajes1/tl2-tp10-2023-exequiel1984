@@ -27,10 +27,12 @@
             <td>@tarea.NombreUsuarioPropietario</td>
             <td>@tarea.NombreUsuarioAsignado</td>
             <td>
-              <a asp-controller="Tarea" asp-action="Editar" asp-route-id="@tarea.Id">Editar</a>
               @if(tarea.tienePermisoDeEdicion){
-                    <a asp-controller="Tarea" asp-action="Eliminar" asp-route-id="@tarea.Id" onclick="return confirm('¿Estas seguro que quieres eliminar el elemento?')">Eliminar</a>                      
+                <a asp-controller="Tarea" asp-action="Editar" asp-route-id="@tarea.Id">Editar</a>
               }           
+              @if(tarea.tienePermisoDeEliminar){
+                <a asp-controller="Tarea" asp-action="Eliminar" asp-route-id="@tarea.Id" onclick="return confirm('¿Estas seguro que quieres eliminar el elemento?')">Eliminar</a>                      
+              }
             </td>
         </tr>
     }

@@ -13,6 +13,7 @@ namespace tl2_tp10_2023_exequiel1984.Models
 
         public Tablero Create(Tablero tablero)
         {
+            int filasAfectadas = 0;
             var query = @"
             INSERT INTO Tablero (id_usuario_propietario, nombre, descripcion)
             VALUES (@usuarioPropietario, @nombre , @descripcion);";
@@ -23,14 +24,19 @@ namespace tl2_tp10_2023_exequiel1984.Models
                 command.Parameters.Add(new SQLiteParameter("@usuarioPropietario", tablero.IdUsuarioPropietario));
                 command.Parameters.Add(new SQLiteParameter("@nombre", tablero.Nombre));
                 command.Parameters.Add(new SQLiteParameter("@descripcion", tablero.Descripcion));
-                command.ExecuteNonQuery();
+                filasAfectadas = command.ExecuteNonQuery();
                 connection.Close();
             }
+            if (filasAfectadas == 0)
+                throw new Exception("No se pudo crear el tablero.");
+        
             return tablero;
         }
 
         public void UpDate(Tablero tablero)
         {
+            int filasAfectadas = 0;
+
             using (SQLiteConnection connection = new SQLiteConnection(_cadenaConexion))
             {
                 var queryString = @"
@@ -42,9 +48,64 @@ namespace tl2_tp10_2023_exequiel1984.Models
                 command.Parameters.Add(new SQLiteParameter("@nombre", tablero.Nombre));
                 command.Parameters.Add(new SQLiteParameter("@descripcion", tablero.Descripcion));
                 command.Parameters.Add(new SQLiteParameter("@idTablero", tablero.Id));
-                command.ExecuteNonQuery();
+                filasAfectadas = command.ExecuteNonQuery();
                 connection.Close();
             }
+            if (filasAfectadas == 0)
+                throw new Exception("No se pudo actualizar el tablero.");
+        }
+
+        public void Remove(int id)
+        {
+            int filasAfectadasTablero = 0;
+
+            using (SQLiteConnection connection = new SQLiteConnection(_cadenaConexion))
+            {
+                string queryBorradoTareas =@"UPDATE Tarea SET activo = 0
+                                            WHERE id_tablero IN (SELECT id FROM Tablero WHERE id = @idTablero);";
+                connection.Open();
+                SQLiteCommand command = new SQLiteCommand(queryBorradoTareas, connection);
+                command.Parameters.Add(new SQLiteParameter("@idTablero", id));
+                command.ExecuteNonQuery();
+                connection.Close();
+                
+                string query = @"UPDATE Tablero SET activo = 0 WHERE id = @idTablero";
+
+                connection.Open();
+                SQLiteCommand commandTablero = new SQLiteCommand(query, connection);
+                commandTablero.Parameters.Add(new SQLiteParameter("@idTablero", id));
+                filasAfectadasTablero = commandTablero.ExecuteNonQuery();
+                connection.Close();
+            }
+            if (filasAfectadasTablero == 0)
+                throw new Exception($"No se encontró ningún tablero con ID {id}.");
+        }
+
+        public List<Tablero> GetAll()
+        {
+            string query = @"SELECT * FROM Tablero WHERE activo = 1;";
+            List<Tablero> tableros = new List<Tablero>();
+            using (SQLiteConnection connection = new SQLiteConnection(_cadenaConexion))
+            {
+                SQLiteCommand command = new SQLiteCommand(query, connection);
+                connection.Open();
+
+                using (SQLiteDataReader Reader = command.ExecuteReader())
+                {
+                    while (Reader.Read())
+                    {
+                        Tablero tablero = new Tablero();
+                        tablero.Id = Convert.ToInt32(Reader["id"]);
+                        tablero.IdUsuarioPropietario = Convert.ToInt32(Reader["id_usuario_propietario"]);
+                        tablero.Nombre = Reader["nombre"].ToString();
+                        tablero.Descripcion = Reader["descripcion"].ToString();
+                        tableros.Add(tablero);
+                    }
+                }
+
+                connection.Close();
+            }
+            return tableros;
         }
 
         public Tablero GetById(int id)
@@ -92,8 +153,6 @@ namespace tl2_tp10_2023_exequiel1984.Models
                 }
                 connection.Close();
             }
-            if (nombre == null)
-                throw new Exception("Tablero no creado");
             return nombre;
         }
 
@@ -118,32 +177,7 @@ namespace tl2_tp10_2023_exequiel1984.Models
             return idUsuarioPropietario;
         }
         
-        public List<Tablero> GetAll()
-        {
-            string query = @"SELECT * FROM Tablero WHERE activo = 1;";
-            List<Tablero> tableros = new List<Tablero>();
-            using (SQLiteConnection connection = new SQLiteConnection(_cadenaConexion))
-            {
-                SQLiteCommand command = new SQLiteCommand(query, connection);
-                connection.Open();
-
-                using (SQLiteDataReader Reader = command.ExecuteReader())
-                {
-                    while (Reader.Read())
-                    {
-                        Tablero tablero = new Tablero();
-                        tablero.Id = Convert.ToInt32(Reader["id"]);
-                        tablero.IdUsuarioPropietario = Convert.ToInt32(Reader["id_usuario_propietario"]);
-                        tablero.Nombre = Reader["nombre"].ToString();
-                        tablero.Descripcion = Reader["descripcion"].ToString();
-                        tableros.Add(tablero);
-                    }
-                }
-
-                connection.Close();
-            }
-            return tableros;
-        }
+        
 
         public List<Tablero> GetByIdUsuarioPropietario(int idUsuario)
         {
@@ -183,7 +217,6 @@ namespace tl2_tp10_2023_exequiel1984.Models
                 connection.Open();
                 using (SQLiteDataReader reader = command.ExecuteReader())
                 {
-
                     if (reader.Read())
                     {
                         int id = Convert.ToInt32(reader["id"]);
@@ -193,29 +226,6 @@ namespace tl2_tp10_2023_exequiel1984.Models
                 connection.Close();
             }
             return listaIdTablero;
-        }
-
-        public void Remove(int id)
-        {
-            using (SQLiteConnection connection = new SQLiteConnection(_cadenaConexion))
-            {
-                //delete from tareas inner join tablero on tarea.idtablero = tablero.id where tablero.id = id
-                string queryBorradoTareas =@"UPDATE Tarea
-                                SET activo = 0
-                                WHERE id_tablero IN (SELECT id FROM Tablero WHERE id = @idTablero);";
-                connection.Open();
-                SQLiteCommand command = new SQLiteCommand(queryBorradoTareas, connection);
-                command.Parameters.Add(new SQLiteParameter("@idTablero", id));
-                command.ExecuteNonQuery();
-                connection.Close();
-                
-                string query = @"UPDATE Tablero SET activo = 0 WHERE id = @idTablero";
-                connection.Open();
-                SQLiteCommand commandTablero = new SQLiteCommand(query, connection);
-                commandTablero.Parameters.Add(new SQLiteParameter("@idTablero", id));
-                commandTablero.ExecuteNonQuery();
-                connection.Close();
-            }
         }
     }
 }
