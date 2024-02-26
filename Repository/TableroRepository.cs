@@ -195,21 +195,25 @@ namespace tl2_tp10_2023_exequiel1984.Models
             return listaIdTablero;
         }
 
-        
-
         public void Remove(int id)
         {
             using (SQLiteConnection connection = new SQLiteConnection(_cadenaConexion))
             {
                 //delete from tareas inner join tablero on tarea.idtablero = tablero.id where tablero.id = id
-
-
-                
-                string query = @"DELETE FROM Tablero WHERE id = @id;";
+                string queryBorradoTareas =@"UPDATE Tarea
+                                SET activo = 0
+                                WHERE id_tablero IN (SELECT id FROM Tablero WHERE id = @idTablero);";
                 connection.Open();
-                SQLiteCommand command = new SQLiteCommand(query, connection);
-                command.Parameters.Add(new SQLiteParameter("@id", id));
+                SQLiteCommand command = new SQLiteCommand(queryBorradoTareas, connection);
+                command.Parameters.Add(new SQLiteParameter("@idTablero", id));
                 command.ExecuteNonQuery();
+                connection.Close();
+                
+                string query = @"UPDATE Tablero SET activo = 0 WHERE id = @idTablero";
+                connection.Open();
+                SQLiteCommand commandTablero = new SQLiteCommand(query, connection);
+                commandTablero.Parameters.Add(new SQLiteParameter("@idTablero", id));
+                commandTablero.ExecuteNonQuery();
                 connection.Close();
             }
         }

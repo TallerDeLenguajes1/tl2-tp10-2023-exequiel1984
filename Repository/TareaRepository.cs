@@ -232,9 +232,7 @@ namespace tl2_tp10_2023_exequiel1984.Models
         {
             using (SQLiteConnection connection = new SQLiteConnection(cadenaConexion))
             {
-                //string query = @"DELETE FROM Tarea WHERE id = @id;";
-                string query = @"UPDATE Tarea SET activo = 0
-                WHERE id = @idTarea;";
+                string query = @"UPDATE Tarea SET activo = 0 WHERE id = @idTarea;";
                 connection.Open();
                 SQLiteCommand command = new SQLiteCommand(query, connection);
                 command.Parameters.Add(new SQLiteParameter("@idTarea", id));
