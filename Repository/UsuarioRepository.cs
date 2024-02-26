@@ -53,19 +53,45 @@ namespace tl2_tp10_2023_exequiel1984.Models
 
         public void Remove(int id)
         {
-            int filasAfectadas = 0;
-
             using (SQLiteConnection connection = new SQLiteConnection(_cadenaConexion))
             {
-                string query = @"DELETE FROM Usuario WHERE id = @id;";
+                string queryTareaPropia = @"UPDATE Tarea
+                                SET activo = 0
+                                WHERE id_tablero IN (SELECT id FROM Tablero WHERE id_usuario_propietario = @idUsuario)";
+                connection.Open();
+                SQLiteCommand commandTareaPropia = new SQLiteCommand(queryTareaPropia, connection);
+                commandTareaPropia.Parameters.Add(new SQLiteParameter("@idUsuario", id));
+                commandTareaPropia.ExecuteNonQuery();
+                connection.Close();
+
+                string queryTareaAjenaAsignada = @"UPDATE Tarea
+                                SET id_usuario_asignado = NULL
+                                WHERE id_tablero IN (SELECT id FROM Tablero WHERE id_usuario_propietario != @idUsuario)
+                                AND id_usuario_asignado = @idUsuario;";
+                connection.Open();
+                SQLiteCommand commandTareaAjena = new SQLiteCommand(queryTareaAjenaAsignada, connection);
+                commandTareaAjena.Parameters.Add(new SQLiteParameter("@idUsuario", id));
+                commandTareaAjena.ExecuteNonQuery();
+                connection.Close();
+
+                string queryTablero = @"UPDATE Tablero
+                                SET activo = 0
+                                WHERE id_usuario_propietario = @idUsuario;";
+                connection.Open();
+                SQLiteCommand commandTablero = new SQLiteCommand(queryTablero, connection);
+                commandTablero.Parameters.Add(new SQLiteParameter("@idUsuario", id));
+                commandTablero.ExecuteNonQuery();
+                connection.Close();
+
+
+                //string query = @"DELETE FROM Usuario WHERE id = @id;";
+                string query = @"UPDATE Usuario SET activo = 0 WHERE id = @idUsuario;";
                 connection.Open();
                 SQLiteCommand command = new SQLiteCommand(query, connection);
-                command.Parameters.Add(new SQLiteParameter("@id", id));
-                filasAfectadas = command.ExecuteNonQuery();
+                command.Parameters.Add(new SQLiteParameter("@idUsuario", id));
+                command.ExecuteNonQuery();
                 connection.Close();
             }
-            if (filasAfectadas == 0)
-                throw new Exception($"No se encontró ningun usuario con el ID {id}.");
         }
             
         public List<Usuario> GetAll()
@@ -143,7 +169,7 @@ namespace tl2_tp10_2023_exequiel1984.Models
 
         public Usuario GetUsuarioLogin(string nombre, string contrasenia)
         {
-            Usuario usuario = null;
+            Usuario usuario = new Usuario();
             using (SQLiteConnection connection = new SQLiteConnection(_cadenaConexion))
             {
                 string queryString = @"SELECT * FROM Usuario WHERE nombre_de_usuario = @nombre AND contrasenia = @contrasenia AND activo = 1;";
@@ -156,7 +182,6 @@ namespace tl2_tp10_2023_exequiel1984.Models
                 {
                     while (reader.Read())
                     {
-                        usuario = new Usuario();
                         usuario.Id = Convert.ToInt32(reader["id"]);
                         usuario.NombreDeUsuario = reader["nombre_de_usuario"].ToString();
                         usuario.Contrasenia = reader["contrasenia"].ToString();
@@ -165,8 +190,6 @@ namespace tl2_tp10_2023_exequiel1984.Models
                 }
                 connection.Close();
             }
-            if (usuario==null)
-                throw new Exception("El usuario con el nombre y contraseña especificado no existe.");
             return usuario;
         }
     }
