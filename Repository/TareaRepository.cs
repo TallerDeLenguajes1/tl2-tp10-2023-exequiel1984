@@ -81,7 +81,7 @@ namespace tl2_tp10_2023_exequiel1984.Models
 
         public List<Tarea> GetAll()
         {
-            string query = @"SELECT * FROM Tarea;";
+            string query = @"SELECT * FROM Tarea WHERE activo = 1;";
             List<Tarea> tareas = new List<Tarea>();
             using (SQLiteConnection connection = new SQLiteConnection(cadenaConexion))
             {
@@ -115,7 +115,7 @@ namespace tl2_tp10_2023_exequiel1984.Models
             Tarea tarea = null;
             using (SQLiteConnection connection = new SQLiteConnection(cadenaConexion))
             {
-                string queryString = @"SELECT * FROM Tarea WHERE id = @idTarea;";
+                string queryString = @"SELECT * FROM Tarea WHERE id = @idTarea  AND activo = 1;";
                 var command = new SQLiteCommand(queryString, connection);
                 command.Parameters.Add(new SQLiteParameter("@idTarea", id));
                 connection.Open();
@@ -143,7 +143,7 @@ namespace tl2_tp10_2023_exequiel1984.Models
 
         public List<Tarea> GetByIdUsuarioAsignado(int? idUsuario)
         {
-            string query = @"SELECT * FROM Tarea WHERE id_usuario_asignado = @idUsuario;";
+            string query = @"SELECT * FROM Tarea WHERE id_usuario_asignado = @idUsuario AND activo = 1;";
             List<Tarea> tareas = new List<Tarea>();
             using (SQLiteConnection connection = new SQLiteConnection(cadenaConexion))
             {
@@ -174,7 +174,7 @@ namespace tl2_tp10_2023_exequiel1984.Models
 
         public List<Tarea> GetAllByIdTablero(int idTablero)
         {
-            string query = @"SELECT * FROM Tarea WHERE id_tablero = @idTablero;";
+            string query = @"SELECT * FROM Tarea WHERE id_tablero = @idTablero AND activo = 1;";
             List<Tarea> tareas = new List<Tarea>();
             using (SQLiteConnection connection = new SQLiteConnection(cadenaConexion))
             {
@@ -206,7 +206,7 @@ namespace tl2_tp10_2023_exequiel1984.Models
 
         public List<int> GetListIdTableroByIdUsuario(int idUsuario)
         {
-            string query = @"SELECT id_tablero FROM Tarea WHERE id_usuario_asignado = @idUsuario;";
+            string query = @"SELECT id_tablero FROM Tarea WHERE id_usuario_asignado = @idUsuario AND activo = 1;";
             List<int> listadoIdTableros = new List<int>();
             using (SQLiteConnection connection = new SQLiteConnection(cadenaConexion))
             {

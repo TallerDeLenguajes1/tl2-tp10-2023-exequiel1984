@@ -52,7 +52,7 @@ namespace tl2_tp10_2023_exequiel1984.Models
             Tablero tablero = null;
             using (SQLiteConnection connection = new SQLiteConnection(_cadenaConexion))
             {
-                string queryString = @"SELECT * FROM Tablero WHERE id = @id;";
+                string queryString = @"SELECT * FROM Tablero WHERE id = @id AND activo = 1;";
                 var command = new SQLiteCommand(queryString, connection);
                 command.Parameters.Add(new SQLiteParameter("@id", id));
                 connection.Open();
@@ -80,7 +80,7 @@ namespace tl2_tp10_2023_exequiel1984.Models
             string nombre = null;
             using (SQLiteConnection connection = new SQLiteConnection(_cadenaConexion))
             {
-                string queryString = @"SELECT nombre FROM Tablero WHERE id = @idTablero;";
+                string queryString = @"SELECT nombre FROM Tablero WHERE id = @idTablero AND activo = 1;";
                 var command = new SQLiteCommand(queryString, connection);
                 command.Parameters.Add(new SQLiteParameter("@idTablero", idTablero));
                 connection.Open();
@@ -102,7 +102,7 @@ namespace tl2_tp10_2023_exequiel1984.Models
             int idUsuarioPropietario = -1;
             using (SQLiteConnection connection = new SQLiteConnection(_cadenaConexion))
             {
-                string queryString = @"SELECT id_usuario_propietario FROM Tablero WHERE id = @idTablero;";
+                string queryString = @"SELECT id_usuario_propietario FROM Tablero WHERE id = @idTablero AND activo = 1;";
                 var command = new SQLiteCommand(queryString, connection);
                 command.Parameters.Add(new SQLiteParameter("@idTablero", idTablero));
                 connection.Open();
@@ -120,7 +120,7 @@ namespace tl2_tp10_2023_exequiel1984.Models
         
         public List<Tablero> GetAll()
         {
-            string query = @"SELECT * FROM Tablero;";
+            string query = @"SELECT * FROM Tablero WHERE activo = 1;";
             List<Tablero> tableros = new List<Tablero>();
             using (SQLiteConnection connection = new SQLiteConnection(_cadenaConexion))
             {
@@ -147,7 +147,7 @@ namespace tl2_tp10_2023_exequiel1984.Models
 
         public List<Tablero> GetByIdUsuarioPropietario(int idUsuario)
         {
-            string query = @"SELECT * FROM Tablero WHERE id_usuario_propietario = @idUsuario;";
+            string query = @"SELECT * FROM Tablero WHERE id_usuario_propietario = @idUsuario AND activo = 1;";
             List<Tablero> tableros = new List<Tablero>();
             using (SQLiteConnection connection = new SQLiteConnection(_cadenaConexion))
             {
@@ -177,7 +177,7 @@ namespace tl2_tp10_2023_exequiel1984.Models
             List<int> listaIdTablero = new List<int>();
             using (SQLiteConnection connection = new SQLiteConnection(_cadenaConexion))
             {
-                string queryString = @"SELECT id FROM Tablero WHERE id_usuario_propietario = @idUsuarioPropietario;";
+                string queryString = @"SELECT id FROM Tablero WHERE id_usuario_propietario = @idUsuarioPropietario AND activo = 1;";
                 var command = new SQLiteCommand(queryString, connection);
                 command.Parameters.Add(new SQLiteParameter("@idUsuarioPropietario", idUsuarioPropietario));
                 connection.Open();

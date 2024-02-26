@@ -88,6 +88,11 @@ public class UsuarioController : GestorTableroKanbanController
         if (!IsLoged()) return RedirectToRoute(new { Controller = "Login", action = "Index" });
         try
         {
+            if (IsOperador())
+            {
+                UsuarioEditarOperadorViewModel usuarioEditarOperador = new UsuarioEditarOperadorViewModel(_usuarioRepository.GetById(id));
+                return View("EditarPorOperador",usuarioEditarOperador);
+            }
             UsuarioEditarViewModel usuarioEditar = new UsuarioEditarViewModel(_usuarioRepository.GetById(id));
             return View(usuarioEditar);
         }
@@ -103,6 +108,24 @@ public class UsuarioController : GestorTableroKanbanController
     {  
         if (!IsLoged()) return RedirectToRoute(new { Controller = "Login", action = "Index" });
         if (!IsAdmin()) return RedirectToRoute(new{Controller = "Login", action = "Index"}); 
+        if(!ModelState.IsValid) return RedirectToRoute(new{Controller = "Login", action = "Index"});
+        try
+        {
+            Usuario usuario = new Usuario(usuarioVM);
+            _usuarioRepository.Update(usuario);
+            return RedirectToAction("Index");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex.ToString());
+            return BadRequest();
+        }
+    }
+
+    [HttpPost]
+    public IActionResult EditarPorOperador(UsuarioEditarOperadorViewModel usuarioVM)
+    {  
+        if (!IsLoged()) return RedirectToRoute(new { Controller = "Login", action = "Index" }); 
         if(!ModelState.IsValid) return RedirectToRoute(new{Controller = "Login", action = "Index"});
         try
         {

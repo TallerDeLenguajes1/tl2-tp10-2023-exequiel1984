@@ -39,6 +39,12 @@ namespace tl2_tp10_2023_exequiel1984.Models
             this.Rol = usuario.Rol;
         }
 
+        public Usuario(UsuarioEditarOperadorViewModel usuario){
+            this.Id = usuario.Id;
+            this.NombreDeUsuario = usuario.Nombre;
+            this.Contrasenia = usuario.Contrasenia;
+        }
+
         public Usuario(UsuarioCrearViewModel usuario){
             this.NombreDeUsuario = usuario.Nombre;
             this.Contrasenia = usuario.Contrasenia;

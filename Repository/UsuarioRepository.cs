@@ -15,7 +15,7 @@ namespace tl2_tp10_2023_exequiel1984.Models
 
         public void Create(Usuario usuario)
         {
-            var query = $"INSERT INTO Usuario (nombre_de_usuario, contrasenia, rol) VALUES (@nombre, @contrasenia, @rol)";
+            var query = @"INSERT INTO Usuario (nombre_de_usuario, contrasenia, rol) VALUES (@nombre, @contrasenia, @rol)";
             try
             {
                 using (SQLiteConnection connection = new SQLiteConnection(_cadenaConexion))
@@ -49,7 +49,7 @@ namespace tl2_tp10_2023_exequiel1984.Models
             SQLiteConnection connection = null;
             try
             {
-                var queryString = @"SELECT * FROM Usuario;";
+                var queryString = @"SELECT * FROM Usuario WHERE activo = 1;";
                 List<Usuario> usuarios = new List<Usuario>();
                 using (connection = new SQLiteConnection(_cadenaConexion))
                 {
@@ -90,7 +90,7 @@ namespace tl2_tp10_2023_exequiel1984.Models
             Usuario usuario = new Usuario();
             using (SQLiteConnection connection = new SQLiteConnection(_cadenaConexion))
             {
-                string queryString = @"SELECT * FROM Usuario WHERE id = @idUsuario;";
+                string queryString = @"SELECT * FROM Usuario WHERE id = @idUsuario AND activo = 1;";
                 var command = new SQLiteCommand(queryString, connection);
                 command.Parameters.Add(new SQLiteParameter("@idUsuario", id));
                 connection.Open();
@@ -114,7 +114,7 @@ namespace tl2_tp10_2023_exequiel1984.Models
             Usuario usuario = new Usuario();
             using (SQLiteConnection connection = new SQLiteConnection(_cadenaConexion))
             {
-                string queryString = @"SELECT * FROM Usuario WHERE id = @idUsuario;";
+                string queryString = @"SELECT * FROM Usuario WHERE id = @idUsuario AND activo = 1;";
                 var command = new SQLiteCommand(queryString, connection);
                 command.Parameters.Add(new SQLiteParameter("@idUsuario", id));
                 connection.Open();
@@ -138,7 +138,7 @@ namespace tl2_tp10_2023_exequiel1984.Models
             Usuario usuario = new Usuario();
             using (SQLiteConnection connection = new SQLiteConnection(_cadenaConexion))
             {
-                string queryString = @"SELECT * FROM Usuario WHERE nombre_de_usuario = @nombre AND contrasenia = @contrasenia;";
+                string queryString = @"SELECT * FROM Usuario WHERE nombre_de_usuario = @nombre AND contrasenia = @contrasenia AND activo = 1;";
                 var command = new SQLiteCommand(queryString, connection);
                 command.Parameters.Add(new SQLiteParameter("@nombre", nombre));
                 command.Parameters.Add(new SQLiteParameter("@contrasenia", contrasenia));
@@ -162,10 +162,13 @@ namespace tl2_tp10_2023_exequiel1984.Models
         public void Update(Usuario usuario){
             using (SQLiteConnection connection = new SQLiteConnection(_cadenaConexion))
             {
-                var queryString = @"UPDATE Usuario SET nombre_de_usuario = @nombre WHERE id = @idUsuario;";
+                var queryString = @"UPDATE Usuario SET nombre_de_usuario = @nombre, contrasenia = @contrasenia, rol = @rol
+                WHERE id = @idUsuario;";
                 connection.Open();
                 var command = new SQLiteCommand(queryString, connection);
                 command.Parameters.Add(new SQLiteParameter("@nombre", usuario.NombreDeUsuario));
+                command.Parameters.Add(new SQLiteParameter("@contrasenia", usuario.Contrasenia));
+                command.Parameters.Add(new SQLiteParameter("@rol", usuario.Rol));
                 command.Parameters.Add(new SQLiteParameter("@idUsuario", usuario.Id));
                 command.ExecuteNonQuery();
                 connection.Close();
